@@ -4,6 +4,7 @@
  */
 
 function initTheme() {
+  if (window.DevToolsComponents) return;
   const savedTheme = localStorage.getItem('devtools_theme') || 'dark';
   document.documentElement.setAttribute('data-theme', savedTheme);
   
@@ -87,6 +88,8 @@ function downloadTextFile(filename, content, mimeType = 'text/plain') {
 }
 
 function initSharedUI() {
+  if (window.DevToolsComponents) return;
+
   initTheme();
 
   const backToTopBtn = document.getElementById('back-to-top');
