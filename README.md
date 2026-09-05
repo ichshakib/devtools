@@ -1,8 +1,10 @@
-# DevTools
-
 <div align="center">
 
-![DevTools Logo](logo.svg)
+<a href="https://ichshakib.github.io/devtools/">
+  <img src="logo.svg" alt="DevTools Logo" width="72" height="72">
+</a>
+
+# DevTools
 
 ### Minimalist, Local-First Developer Utilities Suite
 
