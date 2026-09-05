@@ -12,6 +12,7 @@ const TOOLS = [
     category: 'converters',
     categoryLabel: 'Converters',
     badge: 'Encoder',
+    url: 'tools/base64.html',
     tags: ['base64', 'encode', 'decode', 'binary', 'ascii'],
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="4 17 10 11 4 5"></polyline>
@@ -25,6 +26,7 @@ const TOOLS = [
     category: 'generators',
     categoryLabel: 'Generators',
     badge: 'Assets',
+    url: 'tools/app-icon-generator.html',
     tags: ['icon', 'mobile', 'ios', 'android', 'pwa', 'favicon'],
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
@@ -38,6 +40,7 @@ const TOOLS = [
     category: 'generators',
     categoryLabel: 'Generators',
     badge: 'Text',
+    url: 'tools/slug-generator.html',
     tags: ['slug', 'url', 'seo', 'string', 'permalink'],
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
@@ -51,6 +54,7 @@ const TOOLS = [
     category: 'generators',
     categoryLabel: 'Generators',
     badge: 'Schedule',
+    url: 'tools/cron-generator.html',
     tags: ['cron', 'schedule', 'timer', 'crontab', 'devops'],
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="10"></circle>
@@ -64,6 +68,7 @@ const TOOLS = [
     category: 'seo',
     categoryLabel: 'SEO & Web',
     badge: 'SEO',
+    url: 'tools/robots-txt.html',
     tags: ['robots', 'txt', 'seo', 'crawler', 'disallow'],
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <rect x="3" y="11" width="18" height="10" rx="2"></rect>
@@ -80,6 +85,7 @@ const TOOLS = [
     category: 'seo',
     categoryLabel: 'SEO & Web',
     badge: 'SEO',
+    url: 'tools/sitemap-generator.html',
     tags: ['sitemap', 'xml', 'seo', 'urls', 'indexing'],
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
@@ -94,6 +100,7 @@ const TOOLS = [
     category: 'formatters',
     categoryLabel: 'Formatters',
     badge: 'Format',
+    url: 'tools/json-formatter.html',
     tags: ['json', 'format', 'lint', 'validate', 'minify'],
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -110,6 +117,7 @@ const TOOLS = [
     category: 'converters',
     categoryLabel: 'Converters',
     badge: 'Crypto',
+    url: 'tools/hash-generator.html',
     tags: ['hash', 'sha256', 'md5', 'crypto', 'checksum'],
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
@@ -123,6 +131,7 @@ const TOOLS = [
     category: 'converters',
     categoryLabel: 'Converters',
     badge: 'URI',
+    url: 'tools/url-encoder.html',
     tags: ['url', 'uri', 'encode', 'decode', 'escape'],
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="10"></circle>
@@ -227,11 +236,9 @@ function renderTools() {
   emptyState.style.display = 'none';
 
   toolsGrid.innerHTML = filtered.map(tool => `
-    <article class="tool-card" 
+    <a href="${tool.url}" class="tool-card" 
       data-id="${tool.id}" 
-      tabindex="0" 
-      role="button" 
-      aria-label="${tool.name} tool">
+      aria-label="${escapeHtml(tool.name)} tool">
       <div class="card-header">
         <div class="tool-icon-wrapper" aria-hidden="true">
           ${tool.icon}
@@ -256,7 +263,7 @@ function renderTools() {
           </svg>
         </span>
       </div>
-    </article>
+    </a>
   `).join('');
 }
 
@@ -403,11 +410,7 @@ function attachEventListeners() {
 function handleCardSelect(toolId) {
   const tool = TOOLS.find(t => t.id === toolId);
   if (!tool) return;
-
-  showToast(
-    tool.name,
-    `Selected: ${tool.name}`
-  );
+  window.location.href = tool.url;
 }
 
 function escapeHtml(str) {
