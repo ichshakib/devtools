@@ -1,0 +1,5 @@
+# robots.txt for DevTools
+User-agent: *
+Allow: /
+
+Sitemap: https://ichshakib.github.io/devtools/sitemap.xml
