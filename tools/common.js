@@ -86,4 +86,23 @@ function downloadTextFile(filename, content, mimeType = 'text/plain') {
   showToast('Downloaded', `Saved ${filename}`);
 }
 
-document.addEventListener('DOMContentLoaded', initTheme);
+function initSharedUI() {
+  initTheme();
+
+  const backToTopBtn = document.getElementById('back-to-top');
+  if (backToTopBtn) {
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  // Ctrl+K or / navigates back to index search
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey && e.key.toLowerCase() === 'k') || (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA')) {
+      e.preventDefault();
+      window.location.href = '../index.html#tool-search';
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', initSharedUI);
