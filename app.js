@@ -163,7 +163,9 @@ const toastClose = document.getElementById('toast-close');
 
 // Initialize Application
 function init() {
-  initTheme();
+  if (!window.DevToolsComponents) {
+    initTheme();
+  }
   updateCategoryCounts();
   renderTools();
   attachEventListeners();
@@ -282,7 +284,9 @@ function showToast(title, message) {
 
 // Event Listeners setup
 function attachEventListeners() {
-  themeToggle.addEventListener('click', toggleTheme);
+  if (!window.DevToolsComponents && themeToggle) {
+    themeToggle.addEventListener('click', toggleTheme);
+  }
 
   searchInput.addEventListener('input', (e) => {
     searchQuery = e.target.value;
@@ -344,11 +348,13 @@ function attachEventListeners() {
   });
 
   // Back to top button
-  const backToTopBtn = document.getElementById('back-to-top');
-  if (backToTopBtn) {
-    backToTopBtn.addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+  if (!window.DevToolsComponents) {
+    const backToTopBtn = document.getElementById('back-to-top');
+    if (backToTopBtn) {
+      backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
   }
 
   // Footer tool navigation links
