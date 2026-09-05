@@ -1,31 +1,51 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
-  <!-- Rounded App Icon Background -->
-  <rect width="100" height="100" rx="22" fill="#141a24"/>
-  
-  <!-- Background Code Lines (Teal/Mint) -->
-  <rect x="10" y="23" width="22" height="4.5" rx="2.25" fill="#2dd4bf"/>
-  <rect x="19" y="33" width="12" height="4.5" rx="2.25" fill="#2dd4bf"/>
-  <rect x="19" y="43" width="6" height="4.5" rx="2.25" fill="#2dd4bf"/>
-  <rect x="19" y="58" width="16" height="4.5" rx="2.25" fill="#2dd4bf"/>
-  <rect x="18" y="68" width="18" height="4.5" rx="2.25" fill="#2dd4bf"/>
-  <rect x="71" y="32" width="14" height="4.5" rx="2.25" fill="#2dd4bf"/>
-  
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%" fill="none">
+  <style>
+    :root {
+      --logo-rim: #fafafa;
+      --logo-glass: rgba(255, 255, 255, 0.06);
+      --logo-accent: #2dd4bf;
+      --logo-main: #ffffff;
+      --logo-refl: #fef9c3;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --logo-rim: #18181b;
+        --logo-glass: rgba(0, 0, 0, 0.04);
+        --logo-accent: #0d9488;
+        --logo-main: #18181b;
+        --logo-refl: #ca8a04;
+      }
+    }
+    .logo-rim { stroke: var(--logo-rim, #fafafa); }
+    .logo-glass { fill: var(--logo-glass, rgba(255, 255, 255, 0.06)); }
+    .logo-accent { fill: var(--logo-accent, #2dd4bf); }
+    .logo-main { fill: var(--logo-main, #ffffff); }
+    .logo-refl { stroke: var(--logo-refl, #fef9c3); }
+  </style>
+
+  <!-- Background Code Lines (Teal/Mint Accent) -->
+  <rect class="logo-accent" x="10" y="23" width="22" height="4.5" rx="2.25"/>
+  <rect class="logo-accent" x="19" y="33" width="12" height="4.5" rx="2.25"/>
+  <rect class="logo-accent" x="19" y="43" width="6" height="4.5" rx="2.25"/>
+  <rect class="logo-accent" x="19" y="58" width="16" height="4.5" rx="2.25"/>
+  <rect class="logo-accent" x="18" y="68" width="18" height="4.5" rx="2.25"/>
+  <rect class="logo-accent" x="71" y="32" width="14" height="4.5" rx="2.25"/>
+
   <!-- Magnifying Glass Lens Fill -->
-  <circle cx="48" cy="46" r="23" fill="#17212e"/>
-  
-  <!-- Lens Code Details -->
-  <!-- Top-left reflection highlight -->
-  <path d="M 36 43 A 15 15 0 0 1 47 33" fill="none" stroke="#fef9c3" stroke-width="3" stroke-linecap="round" opacity="0.9"/>
-  
-  <!-- White code bar inside lens -->
-  <rect x="43" y="41" width="17" height="4.5" rx="1.5" fill="#ffffff"/>
-  
-  <!-- Teal code bar inside lens -->
-  <rect x="35" y="50" width="17" height="4.5" rx="1.5" fill="#2dd4bf"/>
-  
+  <circle class="logo-glass" cx="48" cy="46" r="23"/>
+
+  <!-- Lens Top-Left Reflection Highlight -->
+  <path class="logo-refl" d="M 36 43 A 15 15 0 0 1 47 33" stroke-width="3" stroke-linecap="round" opacity="0.9"/>
+
+  <!-- Inside Lens: Primary Code Bar -->
+  <rect class="logo-main" x="43" y="41" width="17" height="4.5" rx="1.5"/>
+
+  <!-- Inside Lens: Accent Code Bar -->
+  <rect class="logo-accent" x="35" y="50" width="17" height="4.5" rx="1.5"/>
+
   <!-- Magnifying Glass Rim -->
-  <circle cx="48" cy="46" r="23" fill="none" stroke="#f8fafc" stroke-width="7.5"/>
-  
+  <circle class="logo-rim" cx="48" cy="46" r="23" stroke-width="7.5"/>
+
   <!-- Magnifying Glass Handle -->
-  <path d="M 64.5 62.5 L 82.5 80.5" stroke="#f8fafc" stroke-width="8.5" stroke-linecap="round"/>
+  <path class="logo-rim" d="M 64.5 62.5 L 82.5 80.5" stroke-width="8.5" stroke-linecap="round"/>
 </svg>

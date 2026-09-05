@@ -44,6 +44,12 @@
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
   
+  --logo-rim: #fafafa;
+  --logo-glass: rgba(255, 255, 255, 0.05);
+  --logo-accent: #2dd4bf;
+  --logo-main: #ffffff;
+  --logo-refl: #fef9c3;
+
   --transition: 0.15s ease;
 }
 
@@ -75,6 +81,12 @@
   --scrollbar-thumb: #d4d4d8;
   --scrollbar-thumb-hover: #a1a1aa;
   --scrollbar-track: transparent;
+
+  --logo-rim: #18181b;
+  --logo-glass: rgba(0, 0, 0, 0.04);
+  --logo-accent: #0d9488;
+  --logo-main: #18181b;
+  --logo-refl: #ca8a04;
 
   --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04);
   --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -172,20 +184,49 @@ body {
 }
 
 .brand-icon {
-  width: 2rem;
-  height: 2rem;
+  width: 2.15rem;
+  height: 2.15rem;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--radius-sm);
-  background: var(--text-primary);
-  color: var(--bg-primary);
+  background: transparent;
+}
+
+.brand-icon.small {
+  width: 1.85rem;
+  height: 1.85rem;
 }
 
 .brand-icon svg {
-  width: 1.15rem;
-  height: 1.15rem;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.logo-rim {
+  stroke: var(--logo-rim);
+  transition: stroke var(--transition);
+}
+
+.logo-glass {
+  fill: var(--logo-glass);
+  transition: fill var(--transition);
+}
+
+.logo-accent {
+  fill: var(--logo-accent);
+  transition: fill var(--transition);
+}
+
+.logo-main {
+  fill: var(--logo-main);
+  transition: fill var(--transition);
+}
+
+.logo-refl {
+  stroke: var(--logo-refl);
+  transition: stroke var(--transition);
 }
 
 .brand-name {
