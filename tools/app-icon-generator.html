@@ -29,7 +29,7 @@
           <h1 class="tool-page-title">App Icon Generator</h1>
           <span class="tool-badge">Assets</span>
         </div>
-        <p class="tool-page-desc">Generate production-ready icon asset sets for iOS, Android, macOS, PWA, and Favicons from a single image using in-browser Canvas resampling.</p>
+        <p class="tool-page-desc">Generate production-ready icon asset sets for Desktop & Electron (Windows, macOS, Linux, and multi-resolution .ICO), iOS, Android, PWA, and Favicons from a single master image.</p>
       </div>
 
       <!-- Upload Dropzone -->
@@ -58,9 +58,13 @@
       </div>
 
       <!-- Export Toolbar -->
-      <div class="tool-options-bar" style="margin-bottom: 1.5rem; justify-content: space-between;">
-        <div style="display: flex; align-items: center; gap: 0.5rem;">
+      <div class="tool-options-bar" style="margin-bottom: 1.5rem; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
+        <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
           <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-primary);">Target Platforms:</span>
+          <label class="option-group">
+            <input type="checkbox" id="filter-desktop" checked>
+            <span>Desktop (Electron)</span>
+          </label>
           <label class="option-group">
             <input type="checkbox" id="filter-ios" checked>
             <span>iOS</span>
@@ -75,7 +79,41 @@
           </label>
         </div>
 
-        <button id="btn-download-all" class="btn-sm btn-primary">Download All Icons</button>
+        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+          <button id="btn-download-ico" class="btn-sm" title="Generate and download multi-resolution Windows / Electron .ico file">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Download .ICO</span>
+          </button>
+          <button id="btn-download-all" class="btn-sm btn-primary">Download All Icons</button>
+        </div>
+      </div>
+
+      <!-- Electron & Desktop Integration Guide -->
+      <div class="tool-panel" style="margin-bottom: 1.5rem;">
+        <div class="panel-header">
+          <span class="panel-title">Electron & Desktop Integration</span>
+          <span class="brand-badge" style="font-size: 0.65rem;">Quick Guide</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.85rem; font-size: 0.825rem; color: var(--text-secondary); margin-top: 0.25rem;">
+          <div style="background: var(--bg-secondary); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+            <strong style="color: var(--text-primary); display: block; margin-bottom: 0.35rem;">1. Electron BrowserWindow Window Icon</strong>
+            <code style="display: block; font-family: var(--font-mono); font-size: 0.775rem; background: var(--bg-primary); padding: 0.5rem; border-radius: 4px; color: var(--text-primary); border: 1px solid var(--border-subtle); overflow-x: auto; white-space: pre;">const win = new BrowserWindow({
+  icon: path.join(__dirname, 'electron-icon-512.png')
+});</code>
+          </div>
+          <div style="background: var(--bg-secondary); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+            <strong style="color: var(--text-primary); display: block; margin-bottom: 0.35rem;">2. electron-builder (package.json)</strong>
+            <code style="display: block; font-family: var(--font-mono); font-size: 0.775rem; background: var(--bg-primary); padding: 0.5rem; border-radius: 4px; color: var(--text-primary); border: 1px solid var(--border-subtle); overflow-x: auto; white-space: pre;">"build": {
+  "win": { "icon": "build/electron-icon.ico" },
+  "mac": { "icon": "build/electron-mac-1024.png" },
+  "linux": { "icon": "build/electron-icon-512.png" }
+}</code>
+          </div>
+        </div>
       </div>
 
       <!-- Generated Preview Grid -->
@@ -94,6 +132,17 @@
   <script src="common.js"></script>
   <script>
     const ICON_SPECS = [
+      // Desktop & Electron
+      { platform: 'desktop', name: 'Electron Main', size: 512, filename: 'electron-icon-512.png' },
+      { platform: 'desktop', name: 'Electron App', size: 256, filename: 'electron-icon-256.png' },
+      { platform: 'desktop', name: 'macOS Retina', size: 1024, filename: 'electron-mac-1024.png' },
+      { platform: 'desktop', name: 'macOS App', size: 512, filename: 'electron-mac-512.png' },
+      { platform: 'desktop', name: 'Desktop 128', size: 128, filename: 'desktop-icon-128.png' },
+      { platform: 'desktop', name: 'Desktop 64', size: 64, filename: 'desktop-icon-64.png' },
+      { platform: 'desktop', name: 'Desktop 48', size: 48, filename: 'desktop-icon-48.png' },
+      { platform: 'desktop', name: 'Desktop 32', size: 32, filename: 'desktop-icon-32.png' },
+      { platform: 'desktop', name: 'Desktop 16', size: 16, filename: 'desktop-icon-16.png' },
+
       // iOS
       { platform: 'ios', name: 'App Store', size: 1024, filename: 'ios-appstore-1024.png' },
       { platform: 'ios', name: 'iPhone App', size: 180, filename: 'ios-iphone-180.png' },
@@ -128,6 +177,7 @@
     const fileResLabel = document.getElementById('file-res-label');
     const iconGrid = document.getElementById('icon-grid');
 
+    const filterDesktop = document.getElementById('filter-desktop');
     const filterIos = document.getElementById('filter-ios');
     const filterAndroid = document.getElementById('filter-android');
     const filterWeb = document.getElementById('filter-web');
@@ -162,10 +212,76 @@
       reader.readAsDataURL(file);
     }
 
+    // Creates a multi-resolution Windows .ICO binary from an array of PNG ArrayBuffers
+    function createIcoFromPngBuffers(pngBuffers) {
+      const count = pngBuffers.length;
+      const headerSize = 6;
+      const dirEntrySize = 16;
+      const dirSize = count * dirEntrySize;
+      let offset = headerSize + dirSize;
+      let totalSize = offset;
+      for (const item of pngBuffers) totalSize += item.buffer.byteLength;
+
+      const out = new Uint8Array(totalSize);
+      const view = new DataView(out.buffer);
+
+      view.setUint16(0, 0, true);
+      view.setUint16(2, 1, true);
+      view.setUint16(4, count, true);
+
+      let entryOffset = headerSize;
+      let dataOffset = offset;
+
+      for (let i = 0; i < count; i++) {
+        const item = pngBuffers[i];
+        const width = item.width >= 256 ? 0 : item.width;
+        const height = item.height >= 256 ? 0 : item.height;
+        const size = item.buffer.byteLength;
+
+        out[entryOffset + 0] = width;
+        out[entryOffset + 1] = height;
+        out[entryOffset + 2] = 0;
+        out[entryOffset + 3] = 0;
+        view.setUint16(entryOffset + 4, 1, true);
+        view.setUint16(entryOffset + 6, 32, true);
+        view.setUint32(entryOffset + 8, size, true);
+        view.setUint32(entryOffset + 12, dataOffset, true);
+
+        out.set(new Uint8Array(item.buffer), dataOffset);
+        entryOffset += dirEntrySize;
+        dataOffset += size;
+      }
+
+      return new Blob([out], { type: 'image/x-icon' });
+    }
+
+    // Generate multi-size ICO blob asynchronously
+    async function generateIcoBlob() {
+      if (!sourceImage) return null;
+      const icoSizes = [16, 32, 48, 64, 128, 256];
+      const pngBuffers = [];
+
+      for (const size of icoSizes) {
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(sourceImage, 0, 0, size, size);
+
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+        const buffer = await blob.arrayBuffer();
+        pngBuffers.push({ width: size, height: size, buffer });
+      }
+
+      return createIcoFromPngBuffers(pngBuffers);
+    }
+
     function renderIconPreviews() {
       if (!sourceImage) return;
 
       const activePlatforms = new Set();
+      if (filterDesktop.checked) activePlatforms.add('desktop');
       if (filterIos.checked) activePlatforms.add('ios');
       if (filterAndroid.checked) activePlatforms.add('android');
       if (filterWeb.checked) activePlatforms.add('web');
@@ -174,6 +290,7 @@
       iconGrid.innerHTML = '';
       generatedBlobs.clear();
 
+      // Render standard PNG cards
       filtered.forEach(spec => {
         const canvas = document.createElement('canvas');
         canvas.width = spec.size;
@@ -208,9 +325,74 @@
           iconGrid.appendChild(card);
         }, 'image/png');
       });
+
+      // If Desktop filter is active, render the multi-resolution Windows / Electron .ICO card
+      if (filterDesktop.checked) {
+        const icoCard = document.createElement('div');
+        icoCard.className = 'icon-preview-card';
+        icoCard.style.borderColor = 'var(--border-hover)';
+        icoCard.innerHTML = `
+          <div class="icon-img-wrap" style="position: relative;">
+            <canvas id="ico-preview-canvas" width="64" height="64" style="width: 100%; height: 100%;"></canvas>
+            <span style="position: absolute; bottom: 3px; right: 3px; font-size: 0.6rem; background: var(--bg-primary); color: var(--text-primary); padding: 0.05rem 0.25rem; border-radius: 3px; font-family: var(--font-mono); border: 1px solid var(--border-color); line-height: 1;">.ICO</span>
+          </div>
+          <span class="icon-label">Windows .ICO</span>
+          <span class="icon-size-badge">Multi (16-256px)</span>
+          <button class="btn-sm btn-primary" style="margin-top: 0.25rem; width: 100%; justify-content: center;">Download .ICO</button>
+        `;
+
+        const pCanvas = icoCard.querySelector('#ico-preview-canvas');
+        const pCtx = pCanvas.getContext('2d');
+        pCtx.imageSmoothingQuality = 'high';
+        pCtx.drawImage(sourceImage, 0, 0, 64, 64);
+
+        icoCard.querySelector('button').addEventListener('click', async () => {
+          let blob = generatedBlobs.get('electron-icon.ico');
+          if (!blob) {
+            showToast('Generating', 'Building multi-resolution .ICO binary...');
+            blob = await generateIcoBlob();
+            if (blob) generatedBlobs.set('electron-icon.ico', blob);
+          }
+          if (blob) {
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'electron-icon.ico';
+            a.click();
+            showToast('Saved', 'Downloaded electron-icon.ico (Windows / Electron)');
+          }
+        });
+
+        iconGrid.appendChild(icoCard);
+
+        // Pre-build ICO binary in background
+        generateIcoBlob().then(blob => {
+          if (blob) generatedBlobs.set('electron-icon.ico', blob);
+        });
+      }
     }
 
-    [filterIos, filterAndroid, filterWeb].forEach(f => f.addEventListener('change', renderIconPreviews));
+    [filterDesktop, filterIos, filterAndroid, filterWeb].forEach(f => f.addEventListener('change', renderIconPreviews));
+
+    // Toolbar direct .ICO download
+    document.getElementById('btn-download-ico').addEventListener('click', async () => {
+      if (!sourceImage) {
+        showToast('No image', 'Please upload or load an image first.');
+        return;
+      }
+      let blob = generatedBlobs.get('electron-icon.ico');
+      if (!blob) {
+        showToast('Generating', 'Building multi-resolution .ICO binary...');
+        blob = await generateIcoBlob();
+        if (blob) generatedBlobs.set('electron-icon.ico', blob);
+      }
+      if (blob) {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'electron-icon.ico';
+        a.click();
+        showToast('Saved', 'Downloaded electron-icon.ico (Windows / Electron)');
+      }
+    });
 
     // Sample logo loader
     document.getElementById('btn-sample-logo').addEventListener('click', (e) => {
@@ -226,10 +408,16 @@
     });
 
     // Batch download all icons
-    document.getElementById('btn-download-all').addEventListener('click', () => {
-      if (generatedBlobs.size === 0) {
+    document.getElementById('btn-download-all').addEventListener('click', async () => {
+      if (generatedBlobs.size === 0 && !sourceImage) {
         showToast('No icons', 'Please upload or load an image first.');
         return;
+      }
+
+      // Ensure ICO is generated if desktop filter is active
+      if (filterDesktop.checked && !generatedBlobs.has('electron-icon.ico')) {
+        const icoBlob = await generateIcoBlob();
+        if (icoBlob) generatedBlobs.set('electron-icon.ico', icoBlob);
       }
 
       let count = 0;
@@ -241,7 +429,7 @@
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
-        }, count * 200);
+        }, count * 180);
         count++;
       });
       showToast('Downloading Icons', `Exporting ${count} icons to your downloads folder.`);
