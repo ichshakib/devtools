@@ -20,14 +20,14 @@ const TOOLS = [
     </svg>`
   },
   {
-    id: 'mobile-icon-generator',
-    name: 'Mobile App Icon Generator',
+    id: 'app-icon-generator',
+    name: 'App Icon Generator',
     description: 'Generate production-ready asset icon sets for iOS, Android, macOS, favicon, and PWA manifests from a master image.',
     category: 'generators',
     categoryLabel: 'Generators',
     badge: 'Assets',
     url: 'tools/app-icon-generator.html',
-    tags: ['icon', 'mobile', 'ios', 'android', 'pwa', 'favicon'],
+    tags: ['icon', 'app icon', 'mobile', 'ios', 'android', 'pwa', 'favicon', 'assets'],
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
       <line x1="12" y1="18" x2="12.01" y2="18"></line>
