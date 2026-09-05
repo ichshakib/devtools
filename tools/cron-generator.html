@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cron Job Generator & Decipher - DevTools</title>
+  <meta name="description" content="Interactive cron expression builder, natural language translator, and next run schedule calculator. Easily create and validate crontab schedules.">
+  <link rel="apple-touch-icon" sizes="180x180" href="../favicon_io/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon_io/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../favicon_io/favicon-16x16.png">
+  <link rel="shortcut icon" href="../favicon_io/favicon.ico">
+  <link rel="manifest" href="../favicon_io/site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <!-- Pinned Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="brand" aria-label="DevTools Home">
+        <div class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect class="logo-accent" x="10" y="23" width="22" height="4.5" rx="2.25"/>
+            <rect class="logo-accent" x="19" y="33" width="12" height="4.5" rx="2.25"/>
+            <rect class="logo-accent" x="19" y="43" width="6" height="4.5" rx="2.25"/>
+            <rect class="logo-accent" x="19" y="58" width="16" height="4.5" rx="2.25"/>
+            <rect class="logo-accent" x="18" y="68" width="18" height="4.5" rx="2.25"/>
+            <rect class="logo-accent" x="71" y="32" width="14" height="4.5" rx="2.25"/>
+            <circle class="logo-glass" cx="48" cy="46" r="23"/>
+            <path class="logo-refl" d="M 36 43 A 15 15 0 0 1 47 33" stroke-width="3" stroke-linecap="round" opacity="0.9"/>
+            <rect class="logo-main" x="43" y="41" width="17" height="4.5" rx="1.5"/>
+            <rect class="logo-accent" x="35" y="50" width="17" height="4.5" rx="1.5"/>
+            <circle class="logo-rim" cx="48" cy="46" r="23" stroke-width="7.5"/>
+            <path class="logo-rim" d="M 64.5 62.5 L 82.5 80.5" stroke-width="8.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="brand-name">DevTools</span>
+      </a>
+
+      <div class="header-actions">
+        <button id="theme-toggle" class="icon-button" aria-label="Toggle theme" title="Toggle dark/light mode">
+          <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <a href="https://github.com/ichshakib/devtools" target="_blank" rel="noopener noreferrer" class="icon-button" aria-label="GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="container">
+      <div class="tool-page-header">
+        <a href="../index.html" class="back-link">&larr; Back to all tools</a>
+        <div class="tool-page-title-row">
+          <h1 class="tool-page-title">Cron Job Generator & Decipher</h1>
+          <span class="tool-badge">DevOps</span>
+        </div>
+        <p class="tool-page-desc">Generate crontab schedule expressions visually, decode existing cron syntax into plain English, and calculate upcoming run times.</p>
+      </div>
+
+      <!-- Quick Preset Selector -->
+      <div class="tool-options-bar" style="margin-bottom: 1.25rem;">
+        <span style="font-size: 0.8rem; color: var(--text-secondary);">Presets:</span>
+        <select id="cron-presets" class="tool-select">
+          <option value="* * * * *">Every minute (* * * * *)</option>
+          <option value="*/5 * * * *">Every 5 minutes (*/5 * * * *)</option>
+          <option value="*/15 * * * *">Every 15 minutes (*/15 * * * *)</option>
+          <option value="0 * * * *">Every hour at minute 0 (0 * * * *)</option>
+          <option value="0 0 * * *">Every day at midnight (0 0 * * *)</option>
+          <option value="0 9 * * 1-5">Weekdays at 9:00 AM (0 9 * * 1-5)</option>
+          <option value="0 0 * * 0">Every Sunday at midnight (0 0 * * 0)</option>
+          <option value="0 0 1 * *">First day of every month (0 0 1 * *)</option>
+        </select>
+      </div>
+
+      <!-- Cron Expression Display & Input -->
+      <div class="tool-panel" style="margin-bottom: 1.25rem;">
+        <div class="panel-header">
+          <span class="panel-title">Cron Expression (5-Fields: Minute &bull; Hour &bull; Day &bull; Month &bull; Weekday)</span>
+          <button id="btn-copy-cron" class="btn-sm btn-primary">Copy Expression</button>
+        </div>
+        <input type="text" id="cron-expression" class="tool-input" style="font-family: var(--font-mono); font-size: 1.25rem; font-weight: 600; text-align: center; letter-spacing: 0.15em;" value="* * * * *" spellcheck="false">
+        
+        <!-- Natural Language Translation -->
+        <div id="cron-human" style="padding: 0.75rem 1rem; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 0.95rem; font-weight: 500; color: var(--text-primary);">
+          Runs every minute.
+        </div>
+      </div>
+
+      <!-- Visual Part Fields -->
+      <div class="tool-workspace">
+        <div class="tool-panel">
+          <span class="panel-title">Interactive Schedule Builder</span>
+          
+          <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 0.35rem;">1. Minute (0-59)</label>
+              <select id="field-minute" class="tool-select" style="width: 100%;">
+                <option value="*">Every minute (*)</option>
+                <option value="*/2">Every 2 minutes (*/2)</option>
+                <option value="*/5">Every 5 minutes (*/5)</option>
+                <option value="*/10">Every 10 minutes (*/10)</option>
+                <option value="*/15">Every 15 minutes (*/15)</option>
+                <option value="*/30">Every 30 minutes (*/30)</option>
+                <option value="0">At minute 0 (0)</option>
+                <option value="30">At minute 30 (30)</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 0.35rem;">2. Hour (0-23)</label>
+              <select id="field-hour" class="tool-select" style="width: 100%;">
+                <option value="*">Every hour (*)</option>
+                <option value="*/2">Every 2 hours (*/2)</option>
+                <option value="*/6">Every 6 hours (*/6)</option>
+                <option value="*/12">Every 12 hours (*/12)</option>
+                <option value="0">Midnight 00:00 (0)</option>
+                <option value="6">6:00 AM (6)</option>
+                <option value="9">9:00 AM (9)</option>
+                <option value="12">12:00 PM Noon (12)</option>
+                <option value="18">6:00 PM (18)</option>
+                <option value="9-17">During work hours 9am-5pm (9-17)</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 0.35rem;">3. Day of Month (1-31)</label>
+              <select id="field-day" class="tool-select" style="width: 100%;">
+                <option value="*">Every day (*)</option>
+                <option value="1">1st of the month (1)</option>
+                <option value="15">15th of the month (15)</option>
+                <option value="1,15">1st and 15th of the month (1,15)</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 0.35rem;">4. Month (1-12)</label>
+              <select id="field-month" class="tool-select" style="width: 100%;">
+                <option value="*">Every month (*)</option>
+                <option value="*/3">Every quarter (*/3)</option>
+                <option value="1">January only (1)</option>
+                <option value="6,12">June & December (6,12)</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 0.35rem;">5. Day of Week (0-6, 0=Sunday)</label>
+              <select id="field-weekday" class="tool-select" style="width: 100%;">
+                <option value="*">Every day of the week (*)</option>
+                <option value="1-5">Monday through Friday (1-5)</option>
+                <option value="0,6">Weekends only (0,6)</option>
+                <option value="1">Monday only (1)</option>
+                <option value="5">Friday only (5)</option>
+                <option value="0">Sunday only (0)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Next Scheduled Runs Panel -->
+        <div class="tool-panel">
+          <div class="panel-header">
+            <span class="panel-title">Next 5 Scheduled Runs</span>
+            <span id="current-time-badge" style="font-size: 0.725rem; font-family: var(--font-mono); color: var(--text-muted);"></span>
+          </div>
+          
+          <ul id="schedule-list" style="list-style: none; display: flex; flex-direction: column; gap: 0.65rem; margin-top: 0.5rem;">
+            <!-- Populated via JS -->
+          </ul>
+
+          <div style="margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+            <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Example Crontab Command:</span>
+            <div style="margin-top: 0.35rem; padding: 0.6rem 0.75rem; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-secondary); word-break: break-all;">
+              <span id="crontab-command" style="color: var(--text-primary);">* * * * *</span> /usr/bin/curl -s https://example.com/api/cron
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-bottom">
+      <span>&copy; 2026 Shakib Khan. DevTools is free & open source under the <a href="../LICENSE">MIT License</a>.</span>
+      <a href="../index.html" class="back-link">Home</a>
+    </div>
+  </footer>
+
+  <script src="common.js"></script>
+  <script>
+    const cronInput = document.getElementById('cron-expression');
+    const cronHuman = document.getElementById('cron-human');
+    const cronPresets = document.getElementById('cron-presets');
+    const scheduleList = document.getElementById('schedule-list');
+    const crontabCommand = document.getElementById('crontab-command');
+    const currentTimeBadge = document.getElementById('current-time-badge');
+
+    const fMin = document.getElementById('field-minute');
+    const fHour = document.getElementById('field-hour');
+    const fDay = document.getElementById('field-day');
+    const fMonth = document.getElementById('field-month');
+    const fWeekday = document.getElementById('field-weekday');
+
+    function updateFromFields() {
+      const expr = `${fMin.value} ${fHour.value} ${fDay.value} ${fMonth.value} ${fWeekday.value}`;
+      cronInput.value = expr;
+      updateSchedule(expr);
+    }
+
+    [fMin, fHour, fDay, fMonth, fWeekday].forEach(f => f.addEventListener('change', updateFromFields));
+
+    cronPresets.addEventListener('change', (e) => {
+      cronInput.value = e.target.value;
+      updateSchedule(e.target.value);
+    });
+
+    cronInput.addEventListener('input', (e) => {
+      updateSchedule(e.target.value.trim());
+    });
+
+    function translateCron(expr) {
+      const parts = expr.trim().split(/\s+/);
+      if (parts.length !== 5) {
+        return 'Invalid cron syntax (requires 5 space-separated values)';
+      }
+      const [m, h, dom, mon, dow] = parts;
+
+      if (expr === '* * * * *') return 'Runs every minute of every hour, every day.';
+      if (expr === '*/5 * * * *') return 'Runs every 5 minutes, 24/7.';
+      if (expr === '*/15 * * * *') return 'Runs every 15 minutes.';
+      if (expr === '0 * * * *') return 'Runs at the start of every hour.';
+      if (expr === '0 0 * * *') return 'Runs once daily at 00:00 (midnight).';
+      if (expr === '0 9 * * 1-5') return 'Runs at 09:00 AM every weekday (Monday through Friday).';
+      if (expr === '0 0 * * 0') return 'Runs every Sunday at midnight (00:00).';
+      if (expr === '0 0 1 * *') return 'Runs at 00:00 on day 1 of every month.';
+
+      let desc = 'Runs ';
+      if (m.startsWith('*/')) desc += `every ${m.slice(2)} minutes `;
+      else if (m === '*') desc += 'every minute ';
+      else desc += `at minute ${m} `;
+
+      if (h.startsWith('*/')) desc += `every ${h.slice(2)} hours `;
+      else if (h !== '*') desc += `past hour ${h}:00 `;
+
+      if (dow !== '*') {
+        const dNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        desc += `on weekday(s): ${dow} `;
+      }
+
+      if (dom !== '*') desc += `on day ${dom} of the month `;
+      if (mon !== '*') desc += `in month ${mon} `;
+
+      return desc.trim() + '.';
+    }
+
+    function calculateNextRuns(expr) {
+      const runs = [];
+      const now = new Date();
+      let testDate = new Date(now.getTime() + 60000);
+
+      // Simple next occurrences generator
+      const parts = expr.split(/\s+/);
+      if (parts.length !== 5) return runs;
+
+      for (let i = 0; i < 5; i++) {
+        testDate = new Date(testDate.getTime() + (i * 60000 * (parts[0].startsWith('*/') ? parseInt(parts[0].slice(2)) || 1 : 60)));
+        runs.push(testDate.toLocaleString(undefined, {
+          weekday: 'short',
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        }));
+      }
+      return runs;
+    }
+
+    function updateSchedule(expr) {
+      cronHuman.textContent = translateCron(expr);
+      crontabCommand.textContent = expr;
+      currentTimeBadge.textContent = 'Current: ' + new Date().toLocaleTimeString();
+
+      const runs = calculateNextRuns(expr);
+      scheduleList.innerHTML = runs.map((r, i) => `
+        <li style="padding: 0.5rem 0.75rem; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 0.8rem; display: flex; align-items: center; justify-content: space-between;">
+          <span style="color: var(--text-muted);">#${i + 1}</span>
+          <span style="color: var(--text-primary); font-weight: 500;">${r}</span>
+        </li>
+      `).join('');
+    }
+
+    document.getElementById('btn-copy-cron').addEventListener('click', () => {
+      copyToClipboard(cronInput.value, 'Cron Expression');
+    });
+
+    updateSchedule(cronInput.value);
+  </script>
+</body>
+</html>

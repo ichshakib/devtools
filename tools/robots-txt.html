@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Robots.txt Generator - DevTools</title>
+  <meta name="description" content="Generate search-engine compliant robots.txt files with custom user-agent rules, disallow paths, crawl delay, and sitemap directives.">
+  <link rel="apple-touch-icon" sizes="180x180" href="../favicon_io/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon_io/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../favicon_io/favicon-16x16.png">
+  <link rel="shortcut icon" href="../favicon_io/favicon.ico">
+  <link rel="manifest" href="../favicon_io/site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <!-- Pinned Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="../index.html" class="brand" aria-label="DevTools Home">
+        <div class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect class="logo-accent" x="10" y="23" width="22" height="4.5" rx="2.25"/>
+            <rect class="logo-accent" x="19" y="33" width="12" height="4.5" rx="2.25"/>
+            <rect class="logo-accent" x="19" y="43" width="6" height="4.5" rx="2.25"/>
+            <rect class="logo-accent" x="19" y="58" width="16" height="4.5" rx="2.25"/>
+            <rect class="logo-accent" x="18" y="68" width="18" height="4.5" rx="2.25"/>
+            <rect class="logo-accent" x="71" y="32" width="14" height="4.5" rx="2.25"/>
+            <circle class="logo-glass" cx="48" cy="46" r="23"/>
+            <path class="logo-refl" d="M 36 43 A 15 15 0 0 1 47 33" stroke-width="3" stroke-linecap="round" opacity="0.9"/>
+            <rect class="logo-main" x="43" y="41" width="17" height="4.5" rx="1.5"/>
+            <rect class="logo-accent" x="35" y="50" width="17" height="4.5" rx="1.5"/>
+            <circle class="logo-rim" cx="48" cy="46" r="23" stroke-width="7.5"/>
+            <path class="logo-rim" d="M 64.5 62.5 L 82.5 80.5" stroke-width="8.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="brand-name">DevTools</span>
+      </a>
+
+      <div class="header-actions">
+        <button id="theme-toggle" class="icon-button" aria-label="Toggle theme" title="Toggle dark/light mode">
+          <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+        <a href="https://github.com/ichshakib/devtools" target="_blank" rel="noopener noreferrer" class="icon-button" aria-label="GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="container">
+      <div class="tool-page-header">
+        <a href="../index.html" class="back-link">&larr; Back to all tools</a>
+        <div class="tool-page-title-row">
+          <h1 class="tool-page-title">Robots.txt Generator</h1>
+          <span class="tool-badge">SEO</span>
+        </div>
+        <p class="tool-page-desc">Build web crawler directives, disallow paths, crawl delay limits, and declare sitemap locations for search bots.</p>
+      </div>
+
+      <!-- Quick Preset Selector -->
+      <div class="tool-options-bar" style="margin-bottom: 1.25rem;">
+        <span style="font-size: 0.8rem; color: var(--text-secondary);">Preset:</span>
+        <select id="robots-preset" class="tool-select">
+          <option value="standard">Standard Web App (Allow all with sitemap)</option>
+          <option value="disallow-admin">Disallow Admin, Private & API (/admin, /private, /api)</option>
+          <option value="block-all">Block all crawlers (Disallow: /)</option>
+          <option value="allow-all">Allow all (Clean Allow: /)</option>
+        </select>
+      </div>
+
+      <div class="tool-workspace">
+        <!-- Configuration Panel -->
+        <div class="tool-panel">
+          <span class="panel-title">Directives & Configuration</span>
+
+          <div>
+            <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 0.35rem;">User-agent:</label>
+            <select id="cfg-agent" class="tool-select" style="width: 100%;">
+              <option value="*">All Robots (*)</option>
+              <option value="Googlebot">Googlebot (Google)</option>
+              <option value="Bingbot">Bingbot (Bing)</option>
+              <option value="Baiduspider">Baiduspider (Baidu)</option>
+              <option value="YandexBot">YandexBot (Yandex)</option>
+              <option value="DuckDuckBot">DuckDuckBot (DuckDuckGo)</option>
+              <option value="Slurp">Yahoo Slurp</option>
+            </select>
+          </div>
+
+          <div>
+            <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 0.35rem;">Disallowed Paths (one per line):</label>
+            <textarea id="cfg-disallow" class="tool-textarea" style="min-height: 110px;" placeholder="/admin/&#10;/private/&#10;/api/"></textarea>
+          </div>
+
+          <div>
+            <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 0.35rem;">Allowed Paths (one per line, optional):</label>
+            <textarea id="cfg-allow" class="tool-textarea" style="min-height: 70px;" placeholder="/"></textarea>
+          </div>
+
+          <div>
+            <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 0.35rem;">Crawl-delay (seconds, optional):</label>
+            <input type="number" id="cfg-delay" class="tool-input" placeholder="e.g. 10 (or leave blank)" min="0">
+          </div>
+
+          <div>
+            <label style="font-size: 0.8rem; font-weight: 600; display: block; margin-bottom: 0.35rem;">Sitemap URL:</label>
+            <input type="url" id="cfg-sitemap" class="tool-input" placeholder="https://example.com/sitemap.xml" value="https://example.com/sitemap.xml">
+          </div>
+        </div>
+
+        <!-- Output Panel -->
+        <div class="tool-panel">
+          <div class="panel-header">
+            <span class="panel-title">Generated robots.txt</span>
+            <div class="panel-actions">
+              <button id="btn-copy" class="btn-sm btn-primary">Copy</button>
+              <button id="btn-download" class="btn-sm">Download robots.txt</button>
+            </div>
+          </div>
+          <textarea id="output-text" class="tool-textarea" readonly spellcheck="false" style="min-height: 380px;"></textarea>
+          <div class="panel-footer">
+            <span id="output-stats">0 lines</span>
+            <span>Valid robots.txt</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-bottom">
+      <span>&copy; 2026 Shakib Khan. DevTools is free & open source under the <a href="../LICENSE">MIT License</a>.</span>
+      <a href="../index.html" class="back-link">Home</a>
+    </div>
+  </footer>
+
+  <script src="common.js"></script>
+  <script>
+    const cfgAgent = document.getElementById('cfg-agent');
+    const cfgDisallow = document.getElementById('cfg-disallow');
+    const cfgAllow = document.getElementById('cfg-allow');
+    const cfgDelay = document.getElementById('cfg-delay');
+    const cfgSitemap = document.getElementById('cfg-sitemap');
+    const outputText = document.getElementById('output-text');
+    const outputStats = document.getElementById('output-stats');
+    const presetSelect = document.getElementById('robots-preset');
+
+    function generateRobots() {
+      const lines = ['# robots.txt generated by DevTools'];
+      lines.push(`User-agent: ${cfgAgent.value || '*'}`);
+
+      const allows = cfgAllow.value.split('\n').map(s => s.trim()).filter(Boolean);
+      allows.forEach(path => lines.push(`Allow: ${path}`));
+
+      const disallows = cfgDisallow.value.split('\n').map(s => s.trim()).filter(Boolean);
+      if (disallows.length === 0 && allows.length === 0) {
+        lines.push('Allow: /');
+      } else {
+        disallows.forEach(path => lines.push(`Disallow: ${path}`));
+      }
+
+      if (cfgDelay.value.trim()) {
+        lines.push(`Crawl-delay: ${cfgDelay.value.trim()}`);
+      }
+
+      if (cfgSitemap.value.trim()) {
+        lines.push('');
+        lines.push(`Sitemap: ${cfgSitemap.value.trim()}`);
+      }
+
+      const result = lines.join('\n');
+      outputText.value = result;
+      outputStats.textContent = `${lines.length} lines`;
+    }
+
+    presetSelect.addEventListener('change', (e) => {
+      const p = e.target.value;
+      if (p === 'standard') {
+        cfgAgent.value = '*';
+        cfgAllow.value = '/';
+        cfgDisallow.value = '';
+        cfgDelay.value = '';
+      } else if (p === 'disallow-admin') {
+        cfgAgent.value = '*';
+        cfgAllow.value = '/';
+        cfgDisallow.value = '/admin/\n/private/\n/api/';
+        cfgDelay.value = '';
+      } else if (p === 'block-all') {
+        cfgAgent.value = '*';
+        cfgAllow.value = '';
+        cfgDisallow.value = '/';
+        cfgDelay.value = '';
+      } else if (p === 'allow-all') {
+        cfgAgent.value = '*';
+        cfgAllow.value = '/';
+        cfgDisallow.value = '';
+        cfgDelay.value = '';
+      }
+      generateRobots();
+    });
+
+    [cfgAgent, cfgDisallow, cfgAllow, cfgDelay, cfgSitemap].forEach(el => {
+      el.addEventListener('input', generateRobots);
+      el.addEventListener('change', generateRobots);
+    });
+
+    document.getElementById('btn-copy').addEventListener('click', () => {
+      copyToClipboard(outputText.value, 'robots.txt');
+    });
+
+    document.getElementById('btn-download').addEventListener('click', () => {
+      downloadTextFile('robots.txt', outputText.value);
+    });
+
+    generateRobots();
+  </script>
+</body>
+</html>
