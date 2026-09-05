@@ -8,19 +8,34 @@
 
 A curated collection of essential, distraction-free developer tools built with vanilla web technologies. Designed for speed, aesthetics, and privacy — **all computations run 100% client-side in your browser.**
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-ichshakib.github.io%2Fdevtools-black.svg?style=flat-square&logo=googlechrome&logoColor=white)](https://ichshakib.github.io/devtools/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-black.svg?style=flat-square)](LICENSE)
 [![Zero Dependencies](https://img.shields.io/badge/Dependencies-Zero-black.svg?style=flat-square)](tools/common.js)
-[![Local-First](https://img.shields.io/badge/Privacy-100%25%20Client--Side-black.svg?style=flat-square)](#privacy--local-first)
+[![Local-First](https://img.shields.io/badge/Privacy-100%25%20Client--Side-black.svg?style=flat-square)](#philosophy--core-principles)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-black.svg?style=flat-square)](CONTRIBUTING.md)
 
-[**Explore DevTools**](https://ichshakib.github.io/devtools/) • [**Report Bug**](https://github.com/ichshakib/devtools/issues) • [**Request Tool**](https://github.com/ichshakib/devtools/issues)
+<br>
+
+### 🌐 [**Launch Live Web App (https://ichshakib.github.io/devtools/)**](https://ichshakib.github.io/devtools/)
+
+[**🚀 Launch Live Demo**](https://ichshakib.github.io/devtools/) • [**Explore Tools**](#tools-directory) • [**Report Bug**](https://github.com/ichshakib/devtools/issues) • [**Request Tool**](https://github.com/ichshakib/devtools/issues)
 
 </div>
 
 ---
 
+> [!TIP]
+> ### 🌐 Live Web App Available
+> You can run and use all developer utilities immediately with zero setup, zero installation, and zero ads:
+> 👉 **[https://ichshakib.github.io/devtools/](https://ichshakib.github.io/devtools/)**
+>
+> All computations, image processing, and hashing execute **100% client-side** in your browser.
+
+---
+
 ## Table of Contents
 
+- [🌐 Live Demo (Web App)](https://ichshakib.github.io/devtools/)
 - [Philosophy & Core Principles](#philosophy--core-principles)
 - [Tools Directory](#tools-directory)
   - [App Icon & Asset Generators](#app-icon--asset-generators)
@@ -52,44 +67,44 @@ DevTools was engineered to solve the frustration of ad-heavy, slow, tracking-lad
 
 ### App Icon & Asset Generators
 
-| Tool | Description | File Formats & Presets |
-|---|---|---|
-| 🤖 **[Android Icon & Splash Generator](tools/android-icon-generator.html)** | Complete Android asset package generator with custom background colors, adaptive safe margin sliders, and an interactive **Splash Screen Studio** with live phone mockup preview. | `mipmap` (mdpi–xxxhdpi), `ic_launcher_round.png`, `playstore-512.png`, adaptive layers (foreground/background), splash screens (1080x2400, 1080x1920, 1920x1080, 1536x2048, Android 12+ 288x288), `styles.xml` |
-| 🍏 **[iOS App Icon Generator](tools/ios-icon-generator.html)** | Apple App Store-compliant iOS icon generator with solid background fill controls (App Store rejects alpha channels) and Xcode asset catalog export. | App Store 1024x1024, iPhone App (180, 120), iPad Pro (167), iPad App (152, 76), Spotlight, Settings, Notifications, and `Contents.json` |
-| 💻 **[Electron & Desktop Icon Generator](tools/electron-icon-generator.html)** | Multi-resolution Windows `.ico` binary generator, macOS Retina PNGs, and Linux desktop icons with copyable `BrowserWindow` and `electron-builder` configuration snippets. | Multi-res Windows `.ico` (16–256px), macOS Retina 1024x1024, macOS 512x512, Linux standard (16–512px) |
-| 🌐 **[Web Favicon & Manifest Generator](tools/favicon-generator.html)** | Multi-size favicon generator featuring a live interactive browser tab mockup, modern PNG favicons, dynamic `site.webmanifest` export, and copyable HTML `<head>` tags. | Multi-size `favicon.ico` (16, 32, 48px), `apple-touch-icon.png` (180x180), Android Chrome (192, 512px), `favicon-32.png`, `favicon-16.png`, `site.webmanifest` |
-| 📦 **[Universal App Icon Generator](tools/app-icon-generator.html)** | All-in-one generator with target platform checkboxes to export Desktop, iOS, Android, and Web icons simultaneously. | Combined multi-platform export + Windows `.ico` |
+| Tool | Description | File Formats & Presets | Live Link |
+|---|---|---|---|
+| 🤖 **[Android Icon & Splash Generator](tools/android-icon-generator.html)** | Complete Android asset package generator with custom background colors, adaptive safe margin sliders, and an interactive **Splash Screen Studio** with live phone mockup preview. | `mipmap` (mdpi–xxxhdpi), `ic_launcher_round.png`, `playstore-512.png`, adaptive layers (foreground/background), splash screens (1080x2400, 1080x1920, 1920x1080, 1536x2048, Android 12+ 288x288), `styles.xml` | [**Open Tool ↗**](https://ichshakib.github.io/devtools/tools/android-icon-generator.html) |
+| 🍏 **[iOS App Icon Generator](tools/ios-icon-generator.html)** | Apple App Store-compliant iOS icon generator with solid background fill controls (App Store rejects alpha channels) and Xcode asset catalog export. | App Store 1024x1024, iPhone App (180, 120), iPad Pro (167), iPad App (152, 76), Spotlight, Settings, Notifications, and `Contents.json` | [**Open Tool ↗**](https://ichshakib.github.io/devtools/tools/ios-icon-generator.html) |
+| 💻 **[Electron & Desktop Icon Generator](tools/electron-icon-generator.html)** | Multi-resolution Windows `.ico` binary generator, macOS Retina PNGs, and Linux desktop icons with copyable `BrowserWindow` and `electron-builder` configuration snippets. | Multi-res Windows `.ico` (16–256px), macOS Retina 1024x1024, macOS 512x512, Linux standard (16–512px) | [**Open Tool ↗**](https://ichshakib.github.io/devtools/tools/electron-icon-generator.html) |
+| 🌐 **[Web Favicon & Manifest Generator](tools/favicon-generator.html)** | Multi-size favicon generator featuring a live interactive browser tab mockup, modern PNG favicons, dynamic `site.webmanifest` export, and copyable HTML `<head>` tags. | Multi-size `favicon.ico` (16, 32, 48px), `apple-touch-icon.png` (180x180), Android Chrome (192, 512px), `favicon-32.png`, `favicon-16.png`, `site.webmanifest` | [**Open Tool ↗**](https://ichshakib.github.io/devtools/tools/favicon-generator.html) |
+| 📦 **[Universal App Icon Generator](tools/app-icon-generator.html)** | All-in-one generator with target platform checkboxes to export Desktop, iOS, Android, and Web icons simultaneously. | Combined multi-platform export + Windows `.ico` | [**Open Tool ↗**](https://ichshakib.github.io/devtools/tools/app-icon-generator.html) |
 
 > [!TIP]
 > **Client-Side ZIP Packaging**: All icon generators include a **Download ZIP** button powered by an internal zero-dependency PKZIP engine. You can download the entire structured asset package in a single `.zip` file without annoying browser multi-file permission prompts, or download icons individually one-by-one.
 
 ### Generators & Utilities
 
-| Tool | Description |
-|---|---|
-| 🔗 **[URL Slug Generator](tools/slug-generator.html)** | Convert headlines, titles, and sentences into clean, URL-friendly, SEO-optimized slugs with customizable delimiters (`-`, `_`, `.`), lowercase filters, and special character sanitization. |
-| ⏱️ **[Cron Job Generator](tools/cron-generator.html)** | Build, inspect, and decipher standard 5-part crontab expressions with natural language descriptions, preset schedules, and live execution previews. |
+| Tool | Description | Live Link |
+|---|---|---|
+| 🔗 **[URL Slug Generator](tools/slug-generator.html)** | Convert headlines, titles, and sentences into clean, URL-friendly, SEO-optimized slugs with customizable delimiters (`-`, `_`, `.`), lowercase filters, and special character sanitization. | [**Open Tool ↗**](https://ichshakib.github.io/devtools/tools/slug-generator.html) |
+| ⏱️ **[Cron Job Generator](tools/cron-generator.html)** | Build, inspect, and decipher standard 5-part crontab expressions with natural language descriptions, preset schedules, and live execution previews. | [**Open Tool ↗**](https://ichshakib.github.io/devtools/tools/cron-generator.html) |
 
 ### Encoders & Converters
 
-| Tool | Description |
-|---|---|
-| 🔤 **[Base64 Encoder / Decoder](tools/base64.html)** | Encode and decode plain text, binary files, images, ASCII strings, and Data URIs to and from Base64 format with instant live preview and file drop. |
-| 🔒 **[Hash & Checksum Generator](tools/hash-generator.html)** | Compute cryptographic hashes (MD5, SHA-1, SHA-256, SHA-512) directly in your browser using the native browser Web Crypto API. |
-| 🌐 **[URL Percent Encoder / Decoder](tools/url-encoder.html)** | Safely encode and decode query parameters, full URLs, and reserved URI characters according to RFC 3986. |
+| Tool | Description | Live Link |
+|---|---|---|
+| 🔤 **[Base64 Encoder / Decoder](tools/base64.html)** | Encode and decode plain text, binary files, images, ASCII strings, and Data URIs to and from Base64 format with instant live preview and file drop. | [**Open Tool ↗**](https://ichshakib.github.io/devtools/tools/base64.html) |
+| 🔒 **[Hash & Checksum Generator](tools/hash-generator.html)** | Compute cryptographic hashes (MD5, SHA-1, SHA-256, SHA-512) directly in your browser using the native browser Web Crypto API. | [**Open Tool ↗**](https://ichshakib.github.io/devtools/tools/hash-generator.html) |
+| 🌐 **[URL Percent Encoder / Decoder](tools/url-encoder.html)** | Safely encode and decode query parameters, full URLs, and reserved URI characters according to RFC 3986. | [**Open Tool ↗**](https://ichshakib.github.io/devtools/tools/url-encoder.html) |
 
 ### SEO & Web
 
-| Tool | Description |
-|---|---|
-| 🤖 **[Robots.txt Generator](tools/robots-txt.html)** | Configure search crawler access rules, user-agent directives, disallow/allow paths, crawl-delay, and XML sitemap references with one-click copy and download. |
-| 🗺️ **[Sitemap.xml Generator](tools/sitemap-generator.html)** | Build standard XML sitemaps with URL entries, change frequencies, priority scores, and last-modified timestamps formatted for search engines. |
+| Tool | Description | Live Link |
+|---|---|---|
+| 🤖 **[Robots.txt Generator](tools/robots-txt.html)** | Configure search crawler access rules, user-agent directives, disallow/allow paths, crawl-delay, and XML sitemap references with one-click copy and download. | [**Open Tool ↗**](https://ichshakib.github.io/devtools/tools/robots-txt.html) |
+| 🗺️ **[Sitemap.xml Generator](tools/sitemap-generator.html)** | Build standard XML sitemaps with URL entries, change frequencies, priority scores, and last-modified timestamps formatted for search engines. | [**Open Tool ↗**](https://ichshakib.github.io/devtools/tools/sitemap-generator.html) |
 
 ### Formatters & Validators
 
-| Tool | Description |
-|---|---|
-| 📋 **[JSON Formatter & Validator](tools/json-formatter.html)** | Beautify, format, validate, minify, and inspect JSON payloads with real-time syntax error detection, custom indentation (2 spaces, 4 spaces, tabs), and statistics. |
+| Tool | Description | Live Link |
+|---|---|---|
+| 📋 **[JSON Formatter & Validator](tools/json-formatter.html)** | Beautify, format, validate, minify, and inspect JSON payloads with real-time syntax error detection, custom indentation (2 spaces, 4 spaces, tabs), and statistics. | [**Open Tool ↗**](https://ichshakib.github.io/devtools/tools/json-formatter.html) |
 
 ---
 
@@ -140,17 +155,24 @@ graph TD
 
 ---
 
-## Quick Start & Local Development
+## Quick Start & Usage
 
-DevTools requires no installation, build step, or bundling. You can run it with any local static HTTP server:
+### Option 1: Access the Hosted Live Web App (Instant / No Setup)
 
-### 1. Clone the Repository
+You can use the production live web app immediately on any device or browser:
+👉 **[https://ichshakib.github.io/devtools/](https://ichshakib.github.io/devtools/)**
+
+### Option 2: Run Locally (Offline & Self-Hosted)
+
+DevTools requires no installation, build step, or bundling. You can run it locally with any static HTTP server:
+
+#### 1. Clone the Repository
 ```bash
 git clone https://github.com/ichshakib/devtools.git
 cd devtools
 ```
 
-### 2. Start a Local Server
+#### 2. Start a Local Server
 
 Using Python:
 ```bash
@@ -167,7 +189,7 @@ Using PHP:
 php -S localhost:3000
 ```
 
-### 3. Open in Browser
+#### 3. Open in Browser
 Visit `http://localhost:3000` to access the full portal and all utilities.
 
 ---
