@@ -317,7 +317,17 @@
             <span class="panel-title" style="display: block;">Generated Favicon Asset Set</span>
             <span style="font-size: 0.75rem; color: var(--text-muted);">Multi-size favicon.ico, standard 32x32/16x16, Apple Touch 180px, Android Chrome 192/512px</span>
           </div>
-          <button id="btn-download-all" class="btn-sm btn-primary">Download All Favicon Assets</button>
+          <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+            <button id="btn-download-zip" class="btn-sm btn-primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Download ZIP</span>
+            </button>
+            <button id="btn-download-all" class="btn-sm" title="Download each icon file one-by-one">Download One-by-One</button>
+          </div>
         </div>
 
         <div id="icon-grid" class="icon-preview-grid">
@@ -738,7 +748,45 @@
       downloadTextFile('site.webmanifest', getManifestJson(), 'application/manifest+json');
     });
 
-    // Batch download all
+    // Download ZIP Bundle
+    document.getElementById('btn-download-zip').addEventListener('click', async () => {
+      if (generatedBlobs.size === 0 && !sourceImage) {
+        showToast('No icons', 'Please upload or load an image first.');
+        return;
+      }
+
+      if (!generatedBlobs.has('favicon.ico')) {
+        const icoBlob = await generateFaviconIcoBlob();
+        if (icoBlob) generatedBlobs.set('favicon.ico', icoBlob);
+      }
+
+      const files = [];
+
+      // Add all generated icon images
+      generatedBlobs.forEach((blob, filename) => {
+        files.push({ name: filename, data: blob });
+      });
+
+      // Add site.webmanifest
+      files.push({ name: 'site.webmanifest', data: getManifestJson() });
+
+      // Add README.txt instructions with copyable HTML tags
+      files.push({
+        name: 'README.txt',
+        data: `Favicon Package generated with DevTools (https://github.com/ichshakib/devtools)
+================================================================================
+
+1. Copy all icon files and site.webmanifest into your website root directory.
+2. Add the following HTML tags inside the <head> section of your HTML pages:
+
+${getHtmlTags()}
+`
+      });
+
+      await downloadZip('favicon_package.zip', files);
+    });
+
+    // Batch download all one-by-one
     document.getElementById('btn-download-all').addEventListener('click', async () => {
       if (generatedBlobs.size === 0 && !sourceImage) {
         showToast('No icons', 'Please upload or load an image first.');
