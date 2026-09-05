@@ -103,7 +103,11 @@
           <div class="footer-col">
             <h4 class="footer-heading">Generators & SEO</h4>
             <ul class="footer-links">
-              <li><a href="${toolsPrefix}app-icon-generator.html">App Icon Generator</a></li>
+              <li><a href="${toolsPrefix}android-icon-generator.html">Android Icon & Splash</a></li>
+              <li><a href="${toolsPrefix}ios-icon-generator.html">iOS App Icon Generator</a></li>
+              <li><a href="${toolsPrefix}electron-icon-generator.html">Electron & Desktop Icons</a></li>
+              <li><a href="${toolsPrefix}favicon-generator.html">Web Favicon Generator</a></li>
+              <li><a href="${toolsPrefix}app-icon-generator.html">Universal Icon Generator</a></li>
               <li><a href="${toolsPrefix}slug-generator.html">URL Slug Generator</a></li>
               <li><a href="${toolsPrefix}cron-generator.html">Cron Expression Builder</a></li>
               <li><a href="${toolsPrefix}robots-txt.html">Robots.txt Generator</a></li>

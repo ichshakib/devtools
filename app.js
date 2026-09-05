@@ -20,17 +20,82 @@ const TOOLS = [
     </svg>`
   },
   {
-    id: 'app-icon-generator',
-    name: 'App Icon Generator',
-    description: 'Generate production-ready asset icon sets for Desktop (Electron, Windows .ico, macOS), iOS, Android, and Web PWA manifests from a master image.',
+    id: 'android-icon-generator',
+    name: 'Android Icon & Splash Generator',
+    description: 'Generate complete Android asset packs: adaptive launcher icons, legacy mipmaps, Play Store 512px, and customizable splash screens with background colors and branding.',
     category: 'generators',
     categoryLabel: 'Generators',
-    badge: 'Assets',
-    url: 'tools/app-icon-generator.html',
-    tags: ['icon', 'app icon', 'desktop', 'electron', 'ico', 'windows', 'macos', 'mobile', 'ios', 'android', 'pwa', 'favicon', 'assets'],
+    badge: 'Android',
+    url: 'tools/android-icon-generator.html',
+    tags: ['android', 'icon', 'splash', 'splash screen', 'adaptive icon', 'mipmap', 'play store', 'mobile'],
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="5" y="6" width="14" height="15" rx="2"></rect>
+      <circle cx="9" cy="11" r="1"></circle>
+      <circle cx="15" cy="11" r="1"></circle>
+      <path d="M9 3l1.5 3"></path>
+      <path d="M15 3l-1.5 3"></path>
+      <line x1="2" y1="12" x2="5" y2="12"></line>
+      <line x1="19" y1="12" x2="22" y2="12"></line>
+    </svg>`
+  },
+  {
+    id: 'ios-icon-generator',
+    name: 'iOS App Icon Generator',
+    description: 'Generate App Store-compliant iOS icon sets for iPhone and iPad with ready-to-use Xcode Contents.json asset catalogs and background fill controls.',
+    category: 'generators',
+    categoryLabel: 'Generators',
+    badge: 'iOS',
+    url: 'tools/ios-icon-generator.html',
+    tags: ['ios', 'icon', 'iphone', 'ipad', 'apple', 'xcode', 'contents.json', 'app store', 'mobile'],
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
       <line x1="12" y1="18" x2="12.01" y2="18"></line>
+    </svg>`
+  },
+  {
+    id: 'electron-icon-generator',
+    name: 'Electron & Desktop Icon Generator',
+    description: 'Generate multi-resolution Windows .ico binaries, macOS Retina PNGs, and Linux desktop icons with Electron and electron-builder configs.',
+    category: 'generators',
+    categoryLabel: 'Generators',
+    badge: 'Desktop',
+    url: 'tools/electron-icon-generator.html',
+    tags: ['electron', 'desktop', 'windows', 'ico', 'macos', 'linux', 'tauri', 'app icon'],
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+      <line x1="8" y1="21" x2="16" y2="21"></line>
+      <line x1="12" y1="17" x2="12" y2="21"></line>
+    </svg>`
+  },
+  {
+    id: 'favicon-generator',
+    name: 'Web Favicon & Manifest Generator',
+    description: 'Generate multi-resolution favicon.ico binaries, modern PNG favicons, Apple Touch icons, and site.webmanifest with live browser tab preview.',
+    category: 'generators',
+    categoryLabel: 'Generators',
+    badge: 'Favicon',
+    url: 'tools/favicon-generator.html',
+    tags: ['favicon', 'ico', 'webmanifest', 'pwa', 'apple touch', 'browser', 'web'],
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="2" y1="12" x2="22" y2="12"></line>
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+    </svg>`
+  },
+  {
+    id: 'app-icon-generator',
+    name: 'Universal App Icon Generator',
+    description: 'Generate all-in-one multi-platform icon asset sets for Desktop, iOS, Android, and Web Favicons in a single pass.',
+    category: 'generators',
+    categoryLabel: 'Generators',
+    badge: 'All-in-One',
+    url: 'tools/app-icon-generator.html',
+    tags: ['icon', 'app icon', 'universal', 'desktop', 'electron', 'ico', 'windows', 'macos', 'mobile', 'ios', 'android', 'pwa', 'favicon', 'assets'],
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="7" height="7"></rect>
+      <rect x="14" y="3" width="7" height="7"></rect>
+      <rect x="14" y="14" width="7" height="7"></rect>
+      <rect x="3" y="14" width="7" height="7"></rect>
     </svg>`
   },
   {
