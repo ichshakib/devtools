@@ -244,7 +244,17 @@
             <span class="panel-title" style="display: block;">Generated iOS Icon Set</span>
             <span style="font-size: 0.75rem; color: var(--text-muted);">iPhone, iPad, Spotlight, Settings, Notifications, and App Store 1024px</span>
           </div>
-          <button id="btn-download-all" class="btn-sm btn-primary">Download All iOS Icons</button>
+          <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+            <button id="btn-download-zip" class="btn-sm btn-primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Download Xcode ZIP</span>
+            </button>
+            <button id="btn-download-all" class="btn-sm" title="Download each icon file one-by-one">Download One-by-One</button>
+          </div>
         </div>
 
         <div id="icon-grid" class="icon-preview-grid">
@@ -518,9 +528,23 @@
       downloadTextFile('Contents.json', getXcodeContentsJson(), 'application/json');
     });
 
-    // Batch download all icons
+    // Download Xcode AppIcon.appiconset ZIP bundle
+    document.getElementById('btn-download-zip').addEventListener('click', async () => {
+      if (generatedBlobs.size === 0 && !sourceImage) {
+        showToast('No icons', 'Please upload or load an image first.');
+        return;
+      }
+      const files = [];
+      generatedBlobs.forEach((blob, filename) => {
+        files.push({ name: `AppIcon.appiconset/${filename}`, data: blob });
+      });
+      files.push({ name: 'AppIcon.appiconset/Contents.json', data: getXcodeContentsJson() });
+      await downloadZip('AppIcon.appiconset.zip', files);
+    });
+
+    // Batch download all icons one-by-one
     document.getElementById('btn-download-all').addEventListener('click', () => {
-      if (generatedBlobs.size === 0) {
+      if (generatedBlobs.size === 0 && !sourceImage) {
         showToast('No icons', 'Please upload or load an image first.');
         return;
       }

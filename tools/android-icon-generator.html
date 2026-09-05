@@ -278,7 +278,17 @@
             <span class="panel-title" style="display: block;">Android Launcher & Mipmap Icons</span>
             <span style="font-size: 0.75rem; color: var(--text-muted);">Standard Android densities (mdpi to xxxhdpi) + Google Play Store 512px + Adaptive Layers</span>
           </div>
-          <button id="btn-download-all-icons" class="btn-sm btn-primary">Download All Android Icons</button>
+          <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+            <button id="btn-download-icons-zip" class="btn-sm btn-primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Download Icons ZIP</span>
+            </button>
+            <button id="btn-download-all-icons" class="btn-sm" title="Download each icon file one-by-one">Download One-by-One</button>
+          </div>
         </div>
 
         <div id="icon-grid" class="icon-preview-grid">
@@ -293,7 +303,17 @@
             <span class="panel-title">Android Splash Screen Studio</span>
             <span class="brand-badge" style="font-size: 0.65rem; margin-left: 0.5rem;">Splash & Launch Screen</span>
           </div>
-          <button id="btn-download-all-splash" class="btn-sm btn-primary">Download All Splash Screens</button>
+          <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+            <button id="btn-download-splash-zip" class="btn-sm btn-primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Download Splash ZIP</span>
+            </button>
+            <button id="btn-download-all-splash" class="btn-sm" title="Download each splash screen file one-by-one">Download One-by-One</button>
+          </div>
         </div>
 
         <div style="display: grid; grid-template-columns: minmax(280px, 320px) 1fr; gap: 1.5rem; margin-top: 1rem;" class="splash-workspace-grid">
@@ -922,7 +942,20 @@
       showToast('Saved', 'Downloaded Phone Splash (1080x2400)');
     });
 
-    // Download All Android Icons
+    // Download All Android Icons as structured ZIP
+    document.getElementById('btn-download-icons-zip').addEventListener('click', async () => {
+      if (iconBlobs.size === 0 && !sourceImage) {
+        showToast('No Icons', 'Please upload or load an image first.');
+        return;
+      }
+      const files = [];
+      iconBlobs.forEach((blob, path) => {
+        files.push({ name: path, data: blob });
+      });
+      await downloadZip('android_app_icons.zip', files);
+    });
+
+    // Download All Android Icons One-by-One
     document.getElementById('btn-download-all-icons').addEventListener('click', () => {
       if (iconBlobs.size === 0) {
         showToast('No Icons', 'Please upload or load an image first.');
@@ -944,7 +977,21 @@
       showToast('Downloading Icons', `Exporting ${count} Android icons.`);
     });
 
-    // Download All Splash Screens
+    // Download All Splash Screens as ZIP
+    document.getElementById('btn-download-splash-zip').addEventListener('click', async () => {
+      if (splashBlobs.size === 0 && !sourceImage) {
+        showToast('No Splash Screens', 'Please upload or load an image first.');
+        return;
+      }
+      const files = [];
+      splashBlobs.forEach((blob, filename) => {
+        files.push({ name: filename, data: blob });
+      });
+      files.push({ name: 'res/values/styles_splash.xml', data: codeXmlSnippet.textContent });
+      await downloadZip('android_splash_screens.zip', files);
+    });
+
+    // Download All Splash Screens One-by-One
     document.getElementById('btn-download-all-splash').addEventListener('click', () => {
       if (splashBlobs.size === 0) {
         showToast('No Splash Screens', 'Please upload or load an image first.');

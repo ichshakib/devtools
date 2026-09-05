@@ -256,7 +256,17 @@ const win = new BrowserWindow({
             <span class="panel-title" style="display: block;">Generated Desktop Icons</span>
             <span style="font-size: 0.75rem; color: var(--text-muted);">Windows (.ico, PNG), macOS Retina (1024px, 512px), Linux Standard</span>
           </div>
-          <button id="btn-download-all" class="btn-sm btn-primary">Download All Desktop Icons</button>
+          <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+            <button id="btn-download-zip" class="btn-sm btn-primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Download ZIP</span>
+            </button>
+            <button id="btn-download-all" class="btn-sm" title="Download each icon file one-by-one">Download One-by-One</button>
+          </div>
         </div>
 
         <div id="icon-grid" class="icon-preview-grid">
@@ -622,7 +632,38 @@ const win = new BrowserWindow({
       }
     });
 
-    // Batch download all
+    // Download All as ZIP bundle
+    document.getElementById('btn-download-zip').addEventListener('click', async () => {
+      if (generatedBlobs.size === 0 && !sourceImage) {
+        showToast('No icons', 'Please upload or load an image first.');
+        return;
+      }
+
+      if (!generatedBlobs.has('electron-icon.ico')) {
+        const icoBlob = await generateIcoBlob();
+        if (icoBlob) generatedBlobs.set('electron-icon.ico', icoBlob);
+      }
+
+      const files = [];
+      generatedBlobs.forEach((blob, filename) => {
+        files.push({ name: filename, data: blob });
+      });
+
+      files.push({
+        name: 'README.txt',
+        data: `Electron & Desktop Icons generated with DevTools (https://github.com/ichshakib/devtools)
+================================================================================
+
+1. Windows: Use electron-icon.ico for your executable and installer.
+2. macOS: Use electron-mac-1024.png for building your icon.icns bundle.
+3. Linux: Use electron-icon-512.png for your desktop shortcut and window icon.
+`
+      });
+
+      await downloadZip('electron_desktop_icons.zip', files);
+    });
+
+    // Batch download all one-by-one
     document.getElementById('btn-download-all').addEventListener('click', async () => {
       if (generatedBlobs.size === 0 && !sourceImage) {
         showToast('No icons', 'Please upload or load an image first.');
