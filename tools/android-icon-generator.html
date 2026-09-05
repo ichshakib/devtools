@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Android App Icon & Splash Screen Generator - DevTools</title>
+  <meta name="description" content="Generate complete Android app icon sets (mipmap densities, adaptive icon layers, round icons, Play Store 512px) and create custom Android splash screens with background colors and branding.">
+  <link rel="apple-touch-icon" sizes="180x180" href="../favicon_io/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon_io/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../favicon_io/favicon-16x16.png">
+  <link rel="shortcut icon" href="../favicon_io/favicon.ico">
+  <link rel="icon" type="image/x-icon" href="../favicon_io/favicon.ico">
+  <link rel="manifest" href="../favicon_io/site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <script src="../components.js"></script>
+  <style>
+    .platform-nav-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      padding: 0.6rem 0.85rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      align-items: center;
+    }
+    .platform-nav-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      transition: all var(--transition-fast);
+    }
+    .platform-nav-pill:hover {
+      border-color: var(--border-hover);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+    .platform-nav-pill.active {
+      background: var(--text-primary);
+      color: var(--bg-primary);
+      border-color: var(--text-primary);
+      font-weight: 600;
+    }
+    .color-swatches {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .color-swatch-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid var(--border-color);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: transform var(--transition-fast), border-color var(--transition-fast);
+    }
+    .color-swatch-btn:hover {
+      transform: scale(1.15);
+      border-color: var(--border-hover);
+    }
+    .color-swatch-btn.active {
+      border-color: var(--text-primary);
+      box-shadow: 0 0 0 2px var(--bg-primary), 0 0 0 4px var(--text-primary);
+    }
+    .color-swatch-btn.transparent {
+      background: repeating-conic-gradient(#808080 0% 25%, #ffffff 0% 50%) 50% / 8px 8px;
+    }
+    .splash-mockup-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+    }
+    .phone-frame {
+      width: 260px;
+      height: 520px;
+      background: #000;
+      border: 6px solid #2a2a2a;
+      border-radius: 36px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .phone-notch {
+      width: 90px;
+      height: 16px;
+      background: #2a2a2a;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+      z-index: 10;
+    }
+    .phone-screen-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .shape-btn-group {
+      display: inline-flex;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    .shape-btn {
+      padding: 0.35rem 0.65rem;
+      font-size: 0.75rem;
+      background: var(--bg-primary);
+      color: var(--text-secondary);
+      border: none;
+      border-right: 1px solid var(--border-color);
+      cursor: pointer;
+      font-family: var(--font-mono);
+      transition: background var(--transition-fast), color var(--transition-fast);
+    }
+    .shape-btn:last-child {
+      border-right: none;
+    }
+    .shape-btn.active {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <!-- Shared Header -->
+  <header id="site-header" class="site-header"></header>
+
+  <main class="main-content">
+    <div class="container">
+      <!-- Breadcrumb & Title -->
+      <div class="tool-page-header">
+        <a href="../index.html" class="back-link">&larr; Back to all tools</a>
+        <div class="tool-page-title-row">
+          <h1 class="tool-page-title">Android App Icon & Splash Generator</h1>
+          <span class="tool-badge">Android</span>
+        </div>
+        <p class="tool-page-desc">Generate production-ready Android icon asset packs (adaptive launcher layers, mipmap densities, round icons, Play Store 512px) and design customized Android splash screens with background colors and branding.</p>
+      </div>
+
+      <!-- Quick Platform Switcher Navigation -->
+      <div class="platform-nav-pills">
+        <span style="font-size: 0.775rem; font-weight: 600; color: var(--text-muted); margin-right: 0.35rem;">SWITCH PLATFORM:</span>
+        <a href="android-icon-generator.html" class="platform-nav-pill active">
+          <span>🤖 Android & Splash</span>
+        </a>
+        <a href="ios-icon-generator.html" class="platform-nav-pill">
+          <span>🍏 iOS Icon Generator</span>
+        </a>
+        <a href="electron-icon-generator.html" class="platform-nav-pill">
+          <span>💻 Electron & Desktop</span>
+        </a>
+        <a href="favicon-generator.html" class="platform-nav-pill">
+          <span>🌐 Web Favicon Generator</span>
+        </a>
+        <a href="app-icon-generator.html" class="platform-nav-pill" style="margin-left: auto;">
+          <span>📦 All-in-One Generator</span>
+        </a>
+      </div>
+
+      <!-- Master Image Upload Dropzone -->
+      <div class="tool-panel" style="margin-bottom: 1.5rem;">
+        <input type="file" id="image-input" accept="image/*" style="display: none;">
+        
+        <div id="dropzone" class="dropzone">
+          <div class="dropzone-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+          </div>
+          <p class="dropzone-text"><strong>Click to upload</strong> or drag and drop your master Android icon</p>
+          <p class="dropzone-subtext">PNG, JPG, SVG, or WebP (preferably 512x512 or 1024x1024 square)</p>
+          <div style="margin-top: 0.85rem;">
+            <button id="btn-sample-logo" class="btn-sm">Load Sample Logo</button>
+          </div>
+        </div>
+
+        <div id="master-info" style="display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono); margin-top: 0.5rem;">
+          <span id="file-name-label">No image loaded</span>
+          <span id="file-res-label"></span>
+        </div>
+      </div>
+
+      <!-- Section 1: Android App Icon Settings & Background Controls -->
+      <div class="tool-panel" style="margin-bottom: 1.5rem;">
+        <div class="panel-header">
+          <span class="panel-title">Android Icon Settings & Background Controls</span>
+          <span class="brand-badge" style="font-size: 0.65rem;">Adaptive & Launcher</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 0.5rem;">
+          <!-- Background Color Selection -->
+          <div>
+            <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.4rem;">
+              Icon Background Color
+            </label>
+            <div class="color-swatches" id="icon-color-swatches">
+              <button class="color-swatch-btn" data-color="#000000" style="background: #000000;" title="Solid Black"></button>
+              <button class="color-swatch-btn active" data-color="#ffffff" style="background: #ffffff;" title="Solid White"></button>
+              <button class="color-swatch-btn" data-color="#121212" style="background: #121212;" title="Dark Charcoal"></button>
+              <button class="color-swatch-btn" data-color="#3ddc84" style="background: #3ddc84;" title="Android Green"></button>
+              <button class="color-swatch-btn" data-color="#1976d2" style="background: #1976d2;" title="Material Blue"></button>
+              <button class="color-swatch-btn transparent" data-color="transparent" title="Transparent Background"></button>
+              
+              <div style="display: flex; align-items: center; gap: 0.35rem; margin-left: 0.5rem;">
+                <input type="color" id="icon-bg-picker" value="#ffffff" style="width: 28px; height: 28px; padding: 0; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; background: none;">
+                <input type="text" id="icon-bg-hex" value="#FFFFFF" maxlength="7" style="width: 78px; font-family: var(--font-mono); font-size: 0.775rem; padding: 0.25rem 0.4rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+              </div>
+            </div>
+            <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 0.35rem;">
+              Used for adaptive background layer and solid icon exports.
+            </span>
+          </div>
+
+          <!-- Icon Padding / Safe Zone -->
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+              <label for="icon-padding-slider" style="font-size: 0.8rem; font-weight: 600; color: var(--text-primary);">
+                Safe Zone Padding: <span id="icon-padding-val" style="font-family: var(--font-mono);">15%</span>
+              </label>
+              <span style="font-size: 0.725rem; color: var(--text-muted);">Android 66dp Safe Area</span>
+            </div>
+            <input type="range" id="icon-padding-slider" min="0" max="35" value="15" style="width: 100%; accent-color: var(--text-primary); cursor: pointer;">
+            <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 0.35rem;">
+              Pads the logo so OEM launcher masks (circles, squircle) won't clip your icon artwork.
+            </span>
+          </div>
+
+          <!-- Shape Preview Mask -->
+          <div>
+            <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.4rem;">
+              Preview Shape Mask
+            </label>
+            <div class="shape-btn-group" id="shape-group">
+              <button class="shape-btn active" data-shape="squircle">Squircle</button>
+              <button class="shape-btn" data-shape="circle">Circle</button>
+              <button class="shape-btn" data-shape="rounded">Rounded</button>
+              <button class="shape-btn" data-shape="square">Square</button>
+            </div>
+            <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 0.35rem;">
+              Changes preview frame mask to simulate different Android OEM launchers.
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Generated Android Icons Grid -->
+      <div class="tool-panel" style="margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.85rem;">
+          <div>
+            <span class="panel-title" style="display: block;">Android Launcher & Mipmap Icons</span>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">Standard Android densities (mdpi to xxxhdpi) + Google Play Store 512px + Adaptive Layers</span>
+          </div>
+          <button id="btn-download-all-icons" class="btn-sm btn-primary">Download All Android Icons</button>
+        </div>
+
+        <div id="icon-grid" class="icon-preview-grid">
+          <!-- Populated via JavaScript -->
+        </div>
+      </div>
+
+      <!-- Section 3: Android Splash Screen Studio (Creator & Editor) -->
+      <div class="tool-panel" style="margin-bottom: 1.5rem;">
+        <div class="panel-header">
+          <div>
+            <span class="panel-title">Android Splash Screen Studio</span>
+            <span class="brand-badge" style="font-size: 0.65rem; margin-left: 0.5rem;">Splash & Launch Screen</span>
+          </div>
+          <button id="btn-download-all-splash" class="btn-sm btn-primary">Download All Splash Screens</button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: minmax(280px, 320px) 1fr; gap: 1.5rem; margin-top: 1rem;" class="splash-workspace-grid">
+          <!-- Live Interactive Phone Mockup -->
+          <div class="splash-mockup-wrapper">
+            <span style="font-size: 0.75rem; font-family: var(--font-mono); color: var(--text-muted); margin-bottom: 0.65rem;">Live Device Preview</span>
+            <div class="phone-frame">
+              <div class="phone-notch"></div>
+              <canvas id="splash-preview-canvas" width="260" height="520" class="phone-screen-canvas"></canvas>
+            </div>
+            <button id="btn-download-phone-splash" class="btn-sm" style="margin-top: 1rem; width: 100%; justify-content: center;">
+              Download Phone Splash (1080x2400)
+            </button>
+          </div>
+
+          <!-- Splash Customization Controls -->
+          <div style="display: flex; flex-direction: column; gap: 1.15rem;">
+            <!-- Splash Background Color -->
+            <div>
+              <label style="display: block; font-size: 0.825rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.4rem;">
+                Splash Background Color
+              </label>
+              <div class="color-swatches" id="splash-color-swatches">
+                <button class="color-swatch-btn" data-color="#000000" style="background: #000000;" title="Black Background"></button>
+                <button class="color-swatch-btn active" data-color="#ffffff" style="background: #ffffff;" title="White Background"></button>
+                <button class="color-swatch-btn" data-color="#121212" style="background: #121212;" title="Dark Charcoal"></button>
+                <button class="color-swatch-btn" data-color="#0d1b2a" style="background: #0d1b2a;" title="Deep Navy"></button>
+                <button class="color-swatch-btn" data-color="#3ddc84" style="background: #3ddc84;" title="Android Green"></button>
+                
+                <div style="display: flex; align-items: center; gap: 0.35rem; margin-left: 0.5rem;">
+                  <input type="color" id="splash-bg-picker" value="#ffffff" style="width: 28px; height: 28px; padding: 0; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; background: none;">
+                  <input type="text" id="splash-bg-hex" value="#FFFFFF" maxlength="7" style="width: 78px; font-family: var(--font-mono); font-size: 0.775rem; padding: 0.25rem 0.4rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+                </div>
+              </div>
+            </div>
+
+            <!-- Logo Scale on Splash -->
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                <label for="splash-logo-scale" style="font-size: 0.825rem; font-weight: 600; color: var(--text-primary);">
+                  Center Logo Size: <span id="splash-logo-scale-val" style="font-family: var(--font-mono);">32%</span>
+                </label>
+                <span style="font-size: 0.725rem; color: var(--text-muted);">Screen Width Ratio</span>
+              </div>
+              <input type="range" id="splash-logo-scale" min="15" max="60" value="32" style="width: 100%; accent-color: var(--text-primary); cursor: pointer;">
+            </div>
+
+            <!-- App Title Branding Text -->
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 0.75rem;">
+              <div>
+                <label for="splash-title-input" style="display: block; font-size: 0.825rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.35rem;">
+                  App Title / Branding (Optional)
+                </label>
+                <input type="text" id="splash-title-input" placeholder="e.g. My Android App" style="width: 100%; padding: 0.45rem 0.65rem; font-size: 0.825rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+              </div>
+              <div>
+                <label for="splash-title-color" style="display: block; font-size: 0.825rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.35rem;">
+                  Text Color
+                </label>
+                <select id="splash-title-color" style="width: 100%; padding: 0.45rem 0.65rem; font-size: 0.825rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+                  <option value="auto">Auto (Contrast)</option>
+                  <option value="#000000">Black</option>
+                  <option value="#ffffff">White</option>
+                  <option value="#3ddc84">Android Green</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Subtitle / Tagline -->
+            <div>
+              <label for="splash-subtitle-input" style="display: block; font-size: 0.825rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.35rem;">
+                Subtitle or Footer Brand Note (Optional)
+              </label>
+              <input type="text" id="splash-subtitle-input" placeholder="e.g. Powered by DevTools" style="width: 100%; padding: 0.45rem 0.65rem; font-size: 0.825rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+            </div>
+
+            <!-- Generated Splash Formats List -->
+            <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.85rem;">
+              <span style="font-size: 0.775rem; font-weight: 600; color: var(--text-primary); display: block; margin-bottom: 0.5rem;">Generated Splash Screen Files:</span>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; font-size: 0.775rem; font-family: var(--font-mono); color: var(--text-secondary);">
+                <div>• drawable-port-xxxhdpi (1080x2400)</div>
+                <div>• drawable-port-xxhdpi (1080x1920)</div>
+                <div>• drawable-land-xxhdpi (1920x1080)</div>
+                <div>• drawable-tablet (1536x2048)</div>
+                <div>• drawable/splash_icon.png (288x288)</div>
+              </div>
+            </div>
+
+            <!-- Android 12+ Theme XML Snippet -->
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                <span style="font-size: 0.775rem; font-weight: 600; color: var(--text-primary);">Android 12+ styles.xml (Theme.SplashScreen)</span>
+                <button id="btn-copy-xml" class="btn-sm" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;">Copy XML</button>
+              </div>
+              <pre id="code-xml-snippet" style="background: var(--bg-primary); padding: 0.65rem; border-radius: 4px; border: 1px solid var(--border-subtle); font-family: var(--font-mono); font-size: 0.725rem; color: var(--text-primary); overflow-x: auto; margin: 0;"></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared Footer -->
+  <footer id="site-footer" class="site-footer"></footer>
+
+  <script src="common.js"></script>
+  <script>
+    // Android Icon Specifications
+    const ANDROID_ICON_SPECS = [
+      { id: 'playstore', name: 'Play Store', size: 512, folder: 'google-play', filename: 'playstore-icon-512.png', type: 'standard' },
+      { id: 'xxxhdpi', name: 'xxxhdpi', size: 192, folder: 'res/mipmap-xxxhdpi', filename: 'ic_launcher.png', type: 'standard' },
+      { id: 'xxhdpi', name: 'xxhdpi', size: 144, folder: 'res/mipmap-xxhdpi', filename: 'ic_launcher.png', type: 'standard' },
+      { id: 'xhdpi', name: 'xhdpi', size: 96, folder: 'res/mipmap-xhdpi', filename: 'ic_launcher.png', type: 'standard' },
+      { id: 'hdpi', name: 'hdpi', size: 72, folder: 'res/mipmap-hdpi', filename: 'ic_launcher.png', type: 'standard' },
+      { id: 'mdpi', name: 'mdpi', size: 48, folder: 'res/mipmap-mdpi', filename: 'ic_launcher.png', type: 'standard' },
+
+      // Round variants
+      { id: 'round-xxxhdpi', name: 'Round xxxhdpi', size: 192, folder: 'res/mipmap-xxxhdpi', filename: 'ic_launcher_round.png', type: 'round' },
+      { id: 'round-xxhdpi', name: 'Round xxhdpi', size: 144, folder: 'res/mipmap-xxhdpi', filename: 'ic_launcher_round.png', type: 'round' },
+      { id: 'round-xhdpi', name: 'Round xhdpi', size: 96, folder: 'res/mipmap-xhdpi', filename: 'ic_launcher_round.png', type: 'round' },
+      { id: 'round-hdpi', name: 'Round hdpi', size: 72, folder: 'res/mipmap-hdpi', filename: 'ic_launcher_round.png', type: 'round' },
+      { id: 'round-mdpi', name: 'Round mdpi', size: 48, folder: 'res/mipmap-mdpi', filename: 'ic_launcher_round.png', type: 'round' },
+
+      // Adaptive Layers
+      { id: 'adaptive-foreground', name: 'Adaptive FG', size: 432, folder: 'res/mipmap-anydpi-v26', filename: 'ic_launcher_foreground.png', type: 'adaptive-fg' },
+      { id: 'adaptive-background', name: 'Adaptive BG', size: 432, folder: 'res/mipmap-anydpi-v26', filename: 'ic_launcher_background.png', type: 'adaptive-bg' },
+
+      // Notifications
+      { id: 'notif-xxxhdpi', name: 'Notification 96', size: 96, folder: 'res/drawable-xxxhdpi', filename: 'ic_stat_notify.png', type: 'notif' },
+      { id: 'notif-xxhdpi', name: 'Notification 72', size: 72, folder: 'res/drawable-xxhdpi', filename: 'ic_stat_notify.png', type: 'notif' },
+      { id: 'notif-xhdpi', name: 'Notification 48', size: 48, folder: 'res/drawable-xhdpi', filename: 'ic_stat_notify.png', type: 'notif' }
+    ];
+
+    // Android Splash Specifications
+    const ANDROID_SPLASH_SPECS = [
+      { id: 'splash-port-tall', name: 'Portrait Tall', width: 1080, height: 2400, filename: 'splash-1080x2400.png' },
+      { id: 'splash-port-fhd', name: 'Portrait FHD', width: 1080, height: 1920, filename: 'splash-1080x1920.png' },
+      { id: 'splash-land-fhd', name: 'Landscape FHD', width: 1920, height: 1080, filename: 'splash-1920x1080.png' },
+      { id: 'splash-tablet', name: 'Tablet 4:3', width: 1536, height: 2048, filename: 'splash-1536x2048.png' },
+      { id: 'splash-vector-icon', name: 'Android 12 Icon', width: 288, height: 288, filename: 'splash_icon-288x288.png' }
+    ];
+
+    let sourceImage = null;
+    let iconBgColor = '#ffffff';
+    let iconPadding = 15; // percent
+    let currentShape = 'squircle';
+
+    let splashBgColor = '#ffffff';
+    let splashLogoScale = 32; // percent
+    let splashTitle = '';
+    let splashTitleColor = 'auto';
+    let splashSubtitle = '';
+
+    const iconBlobs = new Map();
+    const splashBlobs = new Map();
+
+    // DOM Elements
+    const dropzone = document.getElementById('dropzone');
+    const imageInput = document.getElementById('image-input');
+    const fileNameLabel = document.getElementById('file-name-label');
+    const fileResLabel = document.getElementById('file-res-label');
+    const iconGrid = document.getElementById('icon-grid');
+
+    // Controls
+    const iconColorSwatches = document.getElementById('icon-color-swatches');
+    const iconBgPicker = document.getElementById('icon-bg-picker');
+    const iconBgHex = document.getElementById('icon-bg-hex');
+    const iconPaddingSlider = document.getElementById('icon-padding-slider');
+    const iconPaddingVal = document.getElementById('icon-padding-val');
+    const shapeGroup = document.getElementById('shape-group');
+
+    // Splash Controls
+    const splashColorSwatches = document.getElementById('splash-color-swatches');
+    const splashBgPicker = document.getElementById('splash-bg-picker');
+    const splashBgHex = document.getElementById('splash-bg-hex');
+    const splashLogoScaleSlider = document.getElementById('splash-logo-scale');
+    const splashLogoScaleVal = document.getElementById('splash-logo-scale-val');
+    const splashTitleInput = document.getElementById('splash-title-input');
+    const splashTitleColorSelect = document.getElementById('splash-title-color');
+    const splashSubtitleInput = document.getElementById('splash-subtitle-input');
+    const splashPreviewCanvas = document.getElementById('splash-preview-canvas');
+    const codeXmlSnippet = document.getElementById('code-xml-snippet');
+
+    // File Upload Handling
+    dropzone.addEventListener('click', () => imageInput.click());
+
+    dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('dragover');
+    });
+
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        processFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    imageInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        processFile(e.target.files[0]);
+      }
+    });
+
+    function processFile(file) {
+      if (!file.type.startsWith('image/')) {
+        showToast('Invalid file', 'Please upload a valid image file (PNG, JPG, SVG, WebP).');
+        return;
+      }
+
+      fileNameLabel.textContent = file.name;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          sourceImage = img;
+          fileResLabel.textContent = `${img.naturalWidth} × ${img.naturalHeight} px`;
+          renderAll();
+          showToast('Image Loaded', 'Master image ready for Android generation.');
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Sample logo loader
+    document.getElementById('btn-sample-logo').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 512;
+      const ctx = canvas.getContext('2d');
+
+      // Android Robot Inspired Logo
+      ctx.fillStyle = '#3ddc84';
+      ctx.beginPath();
+      ctx.arc(256, 256, 170, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#073042';
+      // Head
+      ctx.beginPath();
+      ctx.arc(256, 230, 90, Math.PI, 0, false);
+      ctx.fill();
+      // Eyes
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(220, 195, 10, 0, Math.PI * 2);
+      ctx.arc(292, 195, 10, 0, Math.PI * 2);
+      ctx.fill();
+      // Antennas
+      ctx.strokeStyle = '#073042';
+      ctx.lineWidth = 10;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(215, 150);
+      ctx.lineTo(195, 115);
+      ctx.moveTo(297, 150);
+      ctx.lineTo(317, 115);
+      ctx.stroke();
+
+      const img = new Image();
+      img.onload = () => {
+        sourceImage = img;
+        fileNameLabel.textContent = 'sample-android-robot.png';
+        fileResLabel.textContent = '512 × 512 px';
+        renderAll();
+        showToast('Sample Loaded', 'Demo Android robot logo ready.');
+      };
+      img.src = canvas.toDataURL('image/png');
+    });
+
+    // Icon Background Swatches
+    iconColorSwatches.querySelectorAll('.color-swatch-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        iconColorSwatches.querySelectorAll('.color-swatch-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        iconBgColor = btn.dataset.color;
+        if (iconBgColor !== 'transparent') {
+          iconBgPicker.value = iconBgColor;
+          iconBgHex.value = iconBgColor.toUpperCase();
+        }
+        renderIcons();
+      });
+    });
+
+    iconBgPicker.addEventListener('input', (e) => {
+      iconBgColor = e.target.value;
+      iconBgHex.value = iconBgColor.toUpperCase();
+      iconColorSwatches.querySelectorAll('.color-swatch-btn').forEach(b => b.classList.remove('active'));
+      renderIcons();
+    });
+
+    iconBgHex.addEventListener('change', (e) => {
+      let val = e.target.value.trim();
+      if (!val.startsWith('#')) val = '#' + val;
+      if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+        iconBgColor = val;
+        iconBgPicker.value = val;
+        iconColorSwatches.querySelectorAll('.color-swatch-btn').forEach(b => b.classList.remove('active'));
+        renderIcons();
+      }
+    });
+
+    // Icon Padding Slider
+    iconPaddingSlider.addEventListener('input', (e) => {
+      iconPadding = parseInt(e.target.value, 10);
+      iconPaddingVal.textContent = `${iconPadding}%`;
+      renderIcons();
+    });
+
+    // Shape Group
+    shapeGroup.querySelectorAll('.shape-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        shapeGroup.querySelectorAll('.shape-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentShape = btn.dataset.shape;
+        updateShapeMasks();
+      });
+    });
+
+    function updateShapeMasks() {
+      const radiusMap = {
+        squircle: '28%',
+        circle: '50%',
+        rounded: '16px',
+        square: '0px'
+      };
+      document.querySelectorAll('.icon-img-wrap').forEach(wrap => {
+        wrap.style.borderRadius = radiusMap[currentShape] || '12px';
+      });
+    }
+
+    // Render Android Icons
+    function renderIcons() {
+      if (!sourceImage) return;
+
+      iconGrid.innerHTML = '';
+      iconBlobs.clear();
+
+      ANDROID_ICON_SPECS.forEach(spec => {
+        const canvas = document.createElement('canvas');
+        canvas.width = spec.size;
+        canvas.height = spec.size;
+        const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingQuality = 'high';
+
+        // Draw Background
+        if (spec.type === 'adaptive-bg') {
+          // Adaptive background layer
+          if (iconBgColor === 'transparent') {
+            ctx.fillStyle = '#ffffff';
+          } else {
+            ctx.fillStyle = iconBgColor;
+          }
+          ctx.fillRect(0, 0, spec.size, spec.size);
+        } else if (spec.type === 'round') {
+          // Clip round icon
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(spec.size / 2, spec.size / 2, spec.size / 2, 0, Math.PI * 2);
+          ctx.clip();
+          if (iconBgColor !== 'transparent') {
+            ctx.fillStyle = iconBgColor;
+            ctx.fillRect(0, 0, spec.size, spec.size);
+          }
+          drawPaddedLogo(ctx, spec.size);
+          ctx.restore();
+        } else if (spec.type === 'notif') {
+          // Notification silhouette (alpha)
+          drawPaddedLogo(ctx, spec.size);
+        } else {
+          // Standard and Foreground
+          if (spec.type !== 'adaptive-fg' && iconBgColor !== 'transparent') {
+            ctx.fillStyle = iconBgColor;
+            ctx.fillRect(0, 0, spec.size, spec.size);
+          }
+          drawPaddedLogo(ctx, spec.size);
+        }
+
+        canvas.toBlob((blob) => {
+          if (!blob) return;
+          const fullPathKey = `${spec.folder}/${spec.filename}`;
+          iconBlobs.set(fullPathKey, blob);
+
+          const card = document.createElement('div');
+          card.className = 'icon-preview-card';
+          card.innerHTML = `
+            <div class="icon-img-wrap" style="border-radius: ${currentShape === 'circle' ? '50%' : currentShape === 'squircle' ? '28%' : currentShape === 'square' ? '0' : '16px'};">
+              <img src="${URL.createObjectURL(blob)}" alt="${spec.name}">
+            </div>
+            <span class="icon-label" title="${spec.filename}">${spec.name}</span>
+            <span class="icon-size-badge">${spec.size}x${spec.size}</span>
+            <button class="btn-sm" style="margin-top: 0.25rem; width: 100%; justify-content: center;">Download</button>
+          `;
+
+          card.querySelector('button').addEventListener('click', () => {
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = spec.filename;
+            a.click();
+            showToast('Saved', `Downloaded ${spec.filename}`);
+          });
+
+          iconGrid.appendChild(card);
+        }, 'image/png');
+      });
+    }
+
+    function drawPaddedLogo(ctx, size) {
+      const padFactor = iconPadding / 100;
+      const pad = size * padFactor;
+      const drawSize = size - (pad * 2);
+      ctx.drawImage(sourceImage, pad, pad, drawSize, drawSize);
+    }
+
+    // Splash Controls
+    splashColorSwatches.querySelectorAll('.color-swatch-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        splashColorSwatches.querySelectorAll('.color-swatch-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        splashBgColor = btn.dataset.color;
+        splashBgPicker.value = splashBgColor;
+        splashBgHex.value = splashBgColor.toUpperCase();
+        renderSplash();
+      });
+    });
+
+    splashBgPicker.addEventListener('input', (e) => {
+      splashBgColor = e.target.value;
+      splashBgHex.value = splashBgColor.toUpperCase();
+      splashColorSwatches.querySelectorAll('.color-swatch-btn').forEach(b => b.classList.remove('active'));
+      renderSplash();
+    });
+
+    splashBgHex.addEventListener('change', (e) => {
+      let val = e.target.value.trim();
+      if (!val.startsWith('#')) val = '#' + val;
+      if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+        splashBgColor = val;
+        splashBgPicker.value = val;
+        splashColorSwatches.querySelectorAll('.color-swatch-btn').forEach(b => b.classList.remove('active'));
+        renderSplash();
+      }
+    });
+
+    splashLogoScaleSlider.addEventListener('input', (e) => {
+      splashLogoScale = parseInt(e.target.value, 10);
+      splashLogoScaleVal.textContent = `${splashLogoScale}%`;
+      renderSplash();
+    });
+
+    splashTitleInput.addEventListener('input', (e) => {
+      splashTitle = e.target.value;
+      renderSplash();
+    });
+
+    splashTitleColorSelect.addEventListener('change', (e) => {
+      splashTitleColor = e.target.value;
+      renderSplash();
+    });
+
+    splashSubtitleInput.addEventListener('input', (e) => {
+      splashSubtitle = e.target.value;
+      renderSplash();
+    });
+
+    // Render Splash Screen & Phone Mockup
+    function renderSplash() {
+      const pCtx = splashPreviewCanvas.getContext('2d');
+      const w = splashPreviewCanvas.width;
+      const h = splashPreviewCanvas.height;
+
+      // Draw Splash Background
+      pCtx.fillStyle = splashBgColor;
+      pCtx.fillRect(0, 0, w, h);
+
+      // Status Bar Indication
+      pCtx.fillStyle = getContrastColor(splashBgColor) === '#ffffff' ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.3)';
+      pCtx.font = '10px Inter, sans-serif';
+      pCtx.textAlign = 'left';
+      pCtx.fillText('9:41', 20, 26);
+      pCtx.textAlign = 'right';
+      pCtx.fillText('100% ⚡', w - 20, 26);
+
+      if (sourceImage) {
+        // Draw Centered Logo
+        const logoScale = splashLogoScale / 100;
+        const logoSize = w * logoScale;
+        const logoX = (w - logoSize) / 2;
+        const logoY = (h - logoSize) / 2 - (splashTitle ? 20 : 0);
+
+        pCtx.imageSmoothingQuality = 'high';
+        pCtx.drawImage(sourceImage, logoX, logoY, logoSize, logoSize);
+
+        // Draw Title
+        if (splashTitle) {
+          const textColor = splashTitleColor === 'auto' ? getContrastColor(splashBgColor) : splashTitleColor;
+          pCtx.fillStyle = textColor;
+          pCtx.font = 'bold 14px Inter, sans-serif';
+          pCtx.textAlign = 'center';
+          pCtx.fillText(splashTitle, w / 2, logoY + logoSize + 28);
+        }
+
+        // Draw Subtitle / Footer Brand
+        if (splashSubtitle) {
+          const subColor = splashTitleColor === 'auto' ? getContrastColor(splashBgColor) : splashTitleColor;
+          pCtx.fillStyle = subColor;
+          pCtx.globalAlpha = 0.65;
+          pCtx.font = '10px Inter, sans-serif';
+          pCtx.textAlign = 'center';
+          pCtx.fillText(splashSubtitle, w / 2, h - 35);
+          pCtx.globalAlpha = 1.0;
+        }
+      } else {
+        pCtx.fillStyle = getContrastColor(splashBgColor);
+        pCtx.font = '12px Inter, sans-serif';
+        pCtx.textAlign = 'center';
+        pCtx.fillText('Upload icon to preview splash', w / 2, h / 2);
+      }
+
+      // Generate Splash Blobs for Export
+      generateSplashBlobs();
+      updateXmlSnippet();
+    }
+
+    function getContrastColor(hexColor) {
+      if (!hexColor || hexColor === 'transparent') return '#000000';
+      const c = hexColor.replace('#', '');
+      const r = parseInt(c.substr(0, 2), 16) || 0;
+      const g = parseInt(c.substr(2, 2), 16) || 0;
+      const b = parseInt(c.substr(4, 2), 16) || 0;
+      const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+      return yiq >= 128 ? '#000000' : '#ffffff';
+    }
+
+    async function generateSplashBlobs() {
+      if (!sourceImage) return;
+      splashBlobs.clear();
+
+      for (const spec of ANDROID_SPLASH_SPECS) {
+        const canvas = document.createElement('canvas');
+        canvas.width = spec.width;
+        canvas.height = spec.height;
+        const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingQuality = 'high';
+
+        // Background
+        ctx.fillStyle = splashBgColor;
+        ctx.fillRect(0, 0, spec.width, spec.height);
+
+        if (spec.id === 'splash-vector-icon') {
+          // Android 12 Icon: just the logo inside 288x288 with safe margin
+          const pad = spec.width * 0.15;
+          ctx.drawImage(sourceImage, pad, pad, spec.width - pad*2, spec.height - pad*2);
+        } else {
+          // Full Splash
+          const logoScale = splashLogoScale / 100;
+          const logoSize = Math.min(spec.width, spec.height) * logoScale;
+          const logoX = (spec.width - logoSize) / 2;
+          const logoY = (spec.height - logoSize) / 2 - (splashTitle ? spec.height * 0.03 : 0);
+
+          ctx.drawImage(sourceImage, logoX, logoY, logoSize, logoSize);
+
+          if (splashTitle) {
+            const textColor = splashTitleColor === 'auto' ? getContrastColor(splashBgColor) : splashTitleColor;
+            ctx.fillStyle = textColor;
+            const fontSize = Math.round(spec.width * 0.045);
+            ctx.font = `bold ${fontSize}px Inter, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.fillText(splashTitle, spec.width / 2, logoY + logoSize + (fontSize * 1.5));
+          }
+
+          if (splashSubtitle) {
+            const subColor = splashTitleColor === 'auto' ? getContrastColor(splashBgColor) : splashTitleColor;
+            ctx.fillStyle = subColor;
+            ctx.globalAlpha = 0.7;
+            const subSize = Math.round(spec.width * 0.026);
+            ctx.font = `${subSize}px Inter, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.fillText(splashSubtitle, spec.width / 2, spec.height - (spec.height * 0.05));
+            ctx.globalAlpha = 1.0;
+          }
+        }
+
+        const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+        if (blob) splashBlobs.set(spec.filename, blob);
+      }
+    }
+
+    function updateXmlSnippet() {
+      const xml = `<!-- res/values/styles.xml (Android 12+ Splash Theme) -->
+<resources>
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <!-- Background color of the splash screen -->
+        <item name="windowSplashScreenBackground">${splashBgColor}</item>
+
+        <!-- Centered splash icon/logo -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_icon</item>
+
+        <!-- Theme to switch to after launch -->
+        <item name="postSplashScreenTheme">@style/Theme.App</item>
+    </style>
+</resources>`;
+      codeXmlSnippet.textContent = xml;
+    }
+
+    document.getElementById('btn-copy-xml').addEventListener('click', () => {
+      copyToClipboard(codeXmlSnippet.textContent, 'Android Splash XML');
+    });
+
+    // Download Phone Splash Directly
+    document.getElementById('btn-download-phone-splash').addEventListener('click', () => {
+      const blob = splashBlobs.get('splash-1080x2400.png');
+      if (!blob) {
+        showToast('No Image', 'Please upload an image first.');
+        return;
+      }
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'splash-1080x2400.png';
+      a.click();
+      showToast('Saved', 'Downloaded Phone Splash (1080x2400)');
+    });
+
+    // Download All Android Icons
+    document.getElementById('btn-download-all-icons').addEventListener('click', () => {
+      if (iconBlobs.size === 0) {
+        showToast('No Icons', 'Please upload or load an image first.');
+        return;
+      }
+      let count = 0;
+      iconBlobs.forEach((blob, path) => {
+        const filename = path.split('/').pop();
+        setTimeout(() => {
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }, count * 180);
+        count++;
+      });
+      showToast('Downloading Icons', `Exporting ${count} Android icons.`);
+    });
+
+    // Download All Splash Screens
+    document.getElementById('btn-download-all-splash').addEventListener('click', () => {
+      if (splashBlobs.size === 0) {
+        showToast('No Splash Screens', 'Please upload or load an image first.');
+        return;
+      }
+      let count = 0;
+      splashBlobs.forEach((blob, filename) => {
+        setTimeout(() => {
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }, count * 200);
+        count++;
+      });
+      showToast('Downloading Splash', `Exporting ${count} Android splash screens.`);
+    });
+
+    function renderAll() {
+      renderIcons();
+      renderSplash();
+    }
+
+    // Initial Empty Render
+    renderSplash();
+  </script>
+</body>
+</html>

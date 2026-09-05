@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Favicon & Manifest Generator - DevTools</title>
+  <meta name="description" content="Generate multi-resolution favicon.ico binaries, PNG favicons, Apple Touch icons, and site.webmanifest with a live browser tab preview client-side.">
+  <link rel="apple-touch-icon" sizes="180x180" href="../favicon_io/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon_io/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../favicon_io/favicon-16x16.png">
+  <link rel="shortcut icon" href="../favicon_io/favicon.ico">
+  <link rel="icon" type="image/x-icon" href="../favicon_io/favicon.ico">
+  <link rel="manifest" href="../favicon_io/site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <script src="../components.js"></script>
+  <style>
+    .platform-nav-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      padding: 0.6rem 0.85rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      align-items: center;
+    }
+    .platform-nav-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      transition: all var(--transition-fast);
+    }
+    .platform-nav-pill:hover {
+      border-color: var(--border-hover);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+    .platform-nav-pill.active {
+      background: var(--text-primary);
+      color: var(--bg-primary);
+      border-color: var(--text-primary);
+      font-weight: 600;
+    }
+    .color-swatches {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .color-swatch-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid var(--border-color);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: transform var(--transition-fast), border-color var(--transition-fast);
+    }
+    .color-swatch-btn:hover {
+      transform: scale(1.15);
+      border-color: var(--border-hover);
+    }
+    .color-swatch-btn.active {
+      border-color: var(--text-primary);
+      box-shadow: 0 0 0 2px var(--bg-primary), 0 0 0 4px var(--text-primary);
+    }
+    .color-swatch-btn.transparent {
+      background: repeating-conic-gradient(#808080 0% 25%, #ffffff 0% 50%) 50% / 8px 8px;
+    }
+
+    /* Browser Mockup */
+    .browser-mockup {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    .browser-tab-bar {
+      display: flex;
+      align-items: center;
+      background: var(--bg-tertiary, rgba(0,0,0,0.15));
+      padding: 0.5rem 0.75rem 0;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .browser-dots {
+      display: flex;
+      gap: 5px;
+      margin-right: 0.5rem;
+    }
+    .browser-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--border-hover);
+    }
+    .browser-tab {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-primary);
+      padding: 0.4rem 0.85rem;
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+      font-size: 0.75rem;
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      border-bottom: none;
+      max-width: 220px;
+      position: relative;
+      bottom: -1px;
+    }
+    .browser-tab-icon {
+      width: 16px;
+      height: 16px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+    .browser-tab-title {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: 500;
+    }
+    .browser-address-bar {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem 0.85rem;
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border-color);
+      gap: 0.65rem;
+      font-size: 0.775rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+    .address-url-box {
+      flex: 1;
+      background: var(--bg-secondary);
+      padding: 0.25rem 0.65rem;
+      border-radius: 4px;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <!-- Shared Header -->
+  <header id="site-header" class="site-header"></header>
+
+  <main class="main-content">
+    <div class="container">
+      <!-- Breadcrumb & Title -->
+      <div class="tool-page-header">
+        <a href="../index.html" class="back-link">&larr; Back to all tools</a>
+        <div class="tool-page-title-row">
+          <h1 class="tool-page-title">Web Favicon & Manifest Generator</h1>
+          <span class="tool-badge">Favicon</span>
+        </div>
+        <p class="tool-page-desc">Generate multi-resolution <code>favicon.ico</code> binaries, modern PNG favicons, Apple Touch icons, and <code>site.webmanifest</code> with a live interactive browser tab preview.</p>
+      </div>
+
+      <!-- Quick Platform Switcher Navigation -->
+      <div class="platform-nav-pills">
+        <span style="font-size: 0.775rem; font-weight: 600; color: var(--text-muted); margin-right: 0.35rem;">SWITCH PLATFORM:</span>
+        <a href="android-icon-generator.html" class="platform-nav-pill">
+          <span>🤖 Android & Splash</span>
+        </a>
+        <a href="ios-icon-generator.html" class="platform-nav-pill">
+          <span>🍏 iOS Icon Generator</span>
+        </a>
+        <a href="electron-icon-generator.html" class="platform-nav-pill">
+          <span>💻 Electron & Desktop</span>
+        </a>
+        <a href="favicon-generator.html" class="platform-nav-pill active">
+          <span>🌐 Web Favicon Generator</span>
+        </a>
+        <a href="app-icon-generator.html" class="platform-nav-pill" style="margin-left: auto;">
+          <span>📦 All-in-One Generator</span>
+        </a>
+      </div>
+
+      <!-- Master Image Dropzone -->
+      <div class="tool-panel" style="margin-bottom: 1.5rem;">
+        <input type="file" id="image-input" accept="image/*" style="display: none;">
+        
+        <div id="dropzone" class="dropzone">
+          <div class="dropzone-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+          </div>
+          <p class="dropzone-text"><strong>Click to upload</strong> or drag and drop your master Favicon image</p>
+          <p class="dropzone-subtext">PNG, JPG, SVG, or WebP (preferably 512x512 square)</p>
+          <div style="margin-top: 0.85rem;">
+            <button id="btn-sample-logo" class="btn-sm">Load Sample Logo</button>
+          </div>
+        </div>
+
+        <div id="master-info" style="display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono); margin-top: 0.5rem;">
+          <span id="file-name-label">No image loaded</span>
+          <span id="file-res-label"></span>
+        </div>
+      </div>
+
+      <!-- Live Interactive Browser Tab Mockup -->
+      <div class="tool-panel" style="margin-bottom: 1.5rem;">
+        <div class="panel-header">
+          <span class="panel-title">Live Browser Tab Mockup</span>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <label for="input-tab-title" style="font-size: 0.775rem; color: var(--text-muted);">Tab Title:</label>
+            <input type="text" id="input-tab-title" value="My Web Application" style="padding: 0.2rem 0.5rem; font-size: 0.775rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary); width: 180px;">
+          </div>
+        </div>
+
+        <div class="browser-mockup" style="margin-top: 0.5rem;">
+          <div class="browser-tab-bar">
+            <div class="browser-dots">
+              <div class="browser-dot" style="background: #ff5f56;"></div>
+              <div class="browser-dot" style="background: #ffbd2e;"></div>
+              <div class="browser-dot" style="background: #27c93f;"></div>
+            </div>
+            <div class="browser-tab">
+              <img id="mockup-tab-icon" class="browser-tab-icon" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'><circle cx='12' cy='12' r='10'/></svg>" alt="Favicon">
+              <span id="mockup-tab-title" class="browser-tab-title">My Web Application</span>
+            </div>
+          </div>
+          <div class="browser-address-bar">
+            <span>🔒</span>
+            <div class="address-url-box">https://mywebapp.com</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Favicon Customization Controls -->
+      <div class="tool-panel" style="margin-bottom: 1.5rem;">
+        <div class="panel-header">
+          <span class="panel-title">Favicon Styling & Metadata</span>
+          <span class="brand-badge" style="font-size: 0.65rem;">Web Standards</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 0.5rem;">
+          <!-- Background Color -->
+          <div>
+            <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.4rem;">
+              Background Color
+            </label>
+            <div class="color-swatches" id="color-swatches">
+              <button class="color-swatch-btn transparent active" data-color="transparent" title="Transparent Background"></button>
+              <button class="color-swatch-btn" data-color="#ffffff" style="background: #ffffff;" title="Solid White"></button>
+              <button class="color-swatch-btn" data-color="#000000" style="background: #000000;" title="Solid Black"></button>
+              <button class="color-swatch-btn" data-color="#121212" style="background: #121212;" title="Dark Charcoal"></button>
+              <button class="color-swatch-btn" data-color="#3b82f6" style="background: #3b82f6;" title="Vibrant Blue"></button>
+              
+              <div style="display: flex; align-items: center; gap: 0.35rem; margin-left: 0.5rem;">
+                <input type="color" id="bg-picker" value="#ffffff" style="width: 28px; height: 28px; padding: 0; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; background: none;">
+                <input type="text" id="bg-hex" value="#FFFFFF" maxlength="7" style="width: 78px; font-family: var(--font-mono); font-size: 0.775rem; padding: 0.25rem 0.4rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+              </div>
+            </div>
+          </div>
+
+          <!-- Padding Slider -->
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+              <label for="padding-slider" style="font-size: 0.8rem; font-weight: 600; color: var(--text-primary);">
+                Padding / Margin: <span id="padding-val" style="font-family: var(--font-mono);">0%</span>
+              </label>
+              <span style="font-size: 0.725rem; color: var(--text-muted);">Tab Margin</span>
+            </div>
+            <input type="range" id="padding-slider" min="0" max="30" value="0" style="width: 100%; accent-color: var(--text-primary); cursor: pointer;">
+          </div>
+
+          <!-- PWA Manifest App Name -->
+          <div>
+            <label for="manifest-name-input" style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.4rem;">
+              site.webmanifest App Name
+            </label>
+            <input type="text" id="manifest-name-input" value="My Web App" style="width: 100%; padding: 0.4rem 0.65rem; font-size: 0.8rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+          </div>
+        </div>
+      </div>
+
+      <!-- HTML Head Snippet & Webmanifest Export -->
+      <div class="tool-panel" style="margin-bottom: 1.5rem;">
+        <div class="panel-header">
+          <span class="panel-title">HTML &lt;head&gt; Integration Tags</span>
+          <div style="display: flex; gap: 0.5rem;">
+            <button id="btn-copy-html" class="btn-sm">Copy HTML Tags</button>
+            <button id="btn-download-manifest" class="btn-sm">Download site.webmanifest</button>
+          </div>
+        </div>
+
+        <pre id="code-html-tags" style="background: var(--bg-primary); padding: 0.75rem; border-radius: 4px; border: 1px solid var(--border-subtle); font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-primary); overflow-x: auto; margin-top: 0.5rem;"></pre>
+      </div>
+
+      <!-- Generated Favicon Assets Grid -->
+      <div class="tool-panel" style="margin-bottom: 3.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.85rem;">
+          <div>
+            <span class="panel-title" style="display: block;">Generated Favicon Asset Set</span>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">Multi-size favicon.ico, standard 32x32/16x16, Apple Touch 180px, Android Chrome 192/512px</span>
+          </div>
+          <button id="btn-download-all" class="btn-sm btn-primary">Download All Favicon Assets</button>
+        </div>
+
+        <div id="icon-grid" class="icon-preview-grid">
+          <!-- Populated via JavaScript -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared Footer -->
+  <footer id="site-footer" class="site-footer"></footer>
+
+  <script src="common.js"></script>
+  <script>
+    const FAVICON_SPECS = [
+      { name: 'Apple Touch Icon', size: 180, filename: 'apple-touch-icon.png' },
+      { name: 'Android Chrome 512', size: 512, filename: 'android-chrome-512x512.png' },
+      { name: 'Android Chrome 192', size: 192, filename: 'android-chrome-192x192.png' },
+      { name: 'Favicon 48', size: 48, filename: 'favicon-48x48.png' },
+      { name: 'Favicon 32', size: 32, filename: 'favicon-32x32.png' },
+      { name: 'Favicon 16', size: 16, filename: 'favicon-16x16.png' }
+    ];
+
+    let sourceImage = null;
+    let bgColor = 'transparent';
+    let iconPadding = 0; // percent
+    const generatedBlobs = new Map();
+
+    const dropzone = document.getElementById('dropzone');
+    const imageInput = document.getElementById('image-input');
+    const fileNameLabel = document.getElementById('file-name-label');
+    const fileResLabel = document.getElementById('file-res-label');
+    const iconGrid = document.getElementById('icon-grid');
+
+    const colorSwatches = document.getElementById('color-swatches');
+    const bgPicker = document.getElementById('bg-picker');
+    const bgHex = document.getElementById('bg-hex');
+    const paddingSlider = document.getElementById('padding-slider');
+    const paddingVal = document.getElementById('padding-val');
+    const manifestNameInput = document.getElementById('manifest-name-input');
+    const inputTabTitle = document.getElementById('input-tab-title');
+    const mockupTabTitle = document.getElementById('mockup-tab-title');
+    const mockupTabIcon = document.getElementById('mockup-tab-icon');
+    const codeHtmlTags = document.getElementById('code-html-tags');
+
+    // Tab Title Sync
+    inputTabTitle.addEventListener('input', () => {
+      mockupTabTitle.textContent = inputTabTitle.value || 'My Web Application';
+    });
+
+    // File Handling
+    dropzone.addEventListener('click', () => imageInput.click());
+
+    dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('dragover');
+    });
+
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        processFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    imageInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        processFile(e.target.files[0]);
+      }
+    });
+
+    function processFile(file) {
+      if (!file.type.startsWith('image/')) {
+        showToast('Invalid file', 'Please upload a valid image file (PNG, JPG, SVG, WebP).');
+        return;
+      }
+
+      fileNameLabel.textContent = file.name;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          sourceImage = img;
+          fileResLabel.textContent = `${img.naturalWidth} × ${img.naturalHeight} px`;
+          renderFavicons();
+          showToast('Image Loaded', 'Master favicon image ready.');
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Sample logo loader
+    document.getElementById('btn-sample-logo').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 512;
+      const ctx = canvas.getContext('2d');
+
+      // Modern Web Favicon Hexagon Logo
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.arc(256, 256, 240, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Cyan / Blue Accent
+      const grad = ctx.createLinearGradient(120, 120, 390, 390);
+      grad.addColorStop(0, '#00f2fe');
+      grad.addColorStop(1, '#4facfe');
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 26;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      ctx.beginPath();
+      ctx.moveTo(170, 200);
+      ctx.lineTo(110, 256);
+      ctx.lineTo(170, 312);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(342, 200);
+      ctx.lineTo(402, 256);
+      ctx.lineTo(342, 312);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(280, 160);
+      ctx.lineTo(232, 352);
+      ctx.stroke();
+
+      const img = new Image();
+      img.onload = () => {
+        sourceImage = img;
+        fileNameLabel.textContent = 'sample-web-logo.png';
+        fileResLabel.textContent = '512 × 512 px';
+        renderFavicons();
+        showToast('Sample Loaded', 'Demo web favicon logo ready.');
+      };
+      img.src = canvas.toDataURL('image/png');
+    });
+
+    // Color Swatches
+    colorSwatches.querySelectorAll('.color-swatch-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        colorSwatches.querySelectorAll('.color-swatch-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        bgColor = btn.dataset.color;
+        if (bgColor !== 'transparent') {
+          bgPicker.value = bgColor;
+          bgHex.value = bgColor.toUpperCase();
+        }
+        renderFavicons();
+      });
+    });
+
+    bgPicker.addEventListener('input', (e) => {
+      bgColor = e.target.value;
+      bgHex.value = bgColor.toUpperCase();
+      colorSwatches.querySelectorAll('.color-swatch-btn').forEach(b => b.classList.remove('active'));
+      renderFavicons();
+    });
+
+    bgHex.addEventListener('change', (e) => {
+      let val = e.target.value.trim();
+      if (!val.startsWith('#')) val = '#' + val;
+      if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+        bgColor = val;
+        bgPicker.value = val;
+        colorSwatches.querySelectorAll('.color-swatch-btn').forEach(b => b.classList.remove('active'));
+        renderFavicons();
+      }
+    });
+
+    // Padding Slider
+    paddingSlider.addEventListener('input', (e) => {
+      iconPadding = parseInt(e.target.value, 10);
+      paddingVal.textContent = `${iconPadding}%`;
+      renderFavicons();
+    });
+
+    // Multi-Size Favicon ICO Binary Generator
+    function createIcoFromPngBuffers(pngBuffers) {
+      const count = pngBuffers.length;
+      const headerSize = 6;
+      const dirEntrySize = 16;
+      const dirSize = count * dirEntrySize;
+      let offset = headerSize + dirSize;
+      let totalSize = offset;
+      for (const item of pngBuffers) totalSize += item.buffer.byteLength;
+
+      const out = new Uint8Array(totalSize);
+      const view = new DataView(out.buffer);
+
+      view.setUint16(0, 0, true);
+      view.setUint16(2, 1, true);
+      view.setUint16(4, count, true);
+
+      let entryOffset = headerSize;
+      let dataOffset = offset;
+
+      for (let i = 0; i < count; i++) {
+        const item = pngBuffers[i];
+        const width = item.width >= 256 ? 0 : item.width;
+        const height = item.height >= 256 ? 0 : item.height;
+        const size = item.buffer.byteLength;
+
+        out[entryOffset + 0] = width;
+        out[entryOffset + 1] = height;
+        out[entryOffset + 2] = 0;
+        out[entryOffset + 3] = 0;
+        view.setUint16(entryOffset + 4, 1, true);
+        view.setUint16(entryOffset + 6, 32, true);
+        view.setUint32(entryOffset + 8, size, true);
+        view.setUint32(entryOffset + 12, dataOffset, true);
+
+        out.set(new Uint8Array(item.buffer), dataOffset);
+        entryOffset += dirEntrySize;
+        dataOffset += size;
+      }
+
+      return new Blob([out], { type: 'image/x-icon' });
+    }
+
+    async function generateFaviconIcoBlob() {
+      if (!sourceImage) return null;
+      const icoSizes = [16, 32, 48];
+      const pngBuffers = [];
+
+      for (const size of icoSizes) {
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingQuality = 'high';
+
+        if (bgColor !== 'transparent') {
+          ctx.fillStyle = bgColor;
+          ctx.fillRect(0, 0, size, size);
+        }
+
+        const padFactor = iconPadding / 100;
+        const pad = size * padFactor;
+        const drawSize = size - (pad * 2);
+        ctx.drawImage(sourceImage, pad, pad, drawSize, drawSize);
+
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+        const buffer = await blob.arrayBuffer();
+        pngBuffers.push({ width: size, height: size, buffer });
+      }
+
+      return createIcoFromPngBuffers(pngBuffers);
+    }
+
+    // Render Favicons
+    function renderFavicons() {
+      if (!sourceImage) return;
+
+      iconGrid.innerHTML = '';
+      generatedBlobs.clear();
+
+      // 1. Favicon.ico card
+      const icoCard = document.createElement('div');
+      icoCard.className = 'icon-preview-card';
+      icoCard.style.borderColor = 'var(--border-hover)';
+      icoCard.innerHTML = `
+        <div class="icon-img-wrap" style="position: relative;">
+          <canvas id="ico-preview-canvas" width="48" height="48" style="width: 100%; height: 100%;"></canvas>
+          <span style="position: absolute; bottom: 3px; right: 3px; font-size: 0.6rem; background: var(--bg-primary); color: var(--text-primary); padding: 0.05rem 0.25rem; border-radius: 3px; font-family: var(--font-mono); border: 1px solid var(--border-color); line-height: 1;">.ICO</span>
+        </div>
+        <span class="icon-label">favicon.ico</span>
+        <span class="icon-size-badge">Multi (16-48px)</span>
+        <button class="btn-sm btn-primary" style="margin-top: 0.25rem; width: 100%; justify-content: center;">Download .ICO</button>
+      `;
+
+      const pCanvas = icoCard.querySelector('#ico-preview-canvas');
+      const pCtx = pCanvas.getContext('2d');
+      pCtx.imageSmoothingQuality = 'high';
+      if (bgColor !== 'transparent') {
+        pCtx.fillStyle = bgColor;
+        pCtx.fillRect(0, 0, 48, 48);
+      }
+      const pad = 48 * (iconPadding / 100);
+      pCtx.drawImage(sourceImage, pad, pad, 48 - pad * 2, 48 - pad * 2);
+
+      icoCard.querySelector('button').addEventListener('click', async () => {
+        let blob = generatedBlobs.get('favicon.ico');
+        if (!blob) {
+          showToast('Generating', 'Compiling favicon.ico binary...');
+          blob = await generateFaviconIcoBlob();
+          if (blob) generatedBlobs.set('favicon.ico', blob);
+        }
+        if (blob) {
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = 'favicon.ico';
+          a.click();
+          showToast('Saved', 'Downloaded favicon.ico');
+        }
+      });
+
+      iconGrid.appendChild(icoCard);
+
+      // Pre-compile favicon.ico in background
+      generateFaviconIcoBlob().then(blob => {
+        if (blob) generatedBlobs.set('favicon.ico', blob);
+      });
+
+      // Update Live Browser Mockup Tab Icon (use 32x32 canvas)
+      const tabCanvas = document.createElement('canvas');
+      tabCanvas.width = 32;
+      tabCanvas.height = 32;
+      const tabCtx = tabCanvas.getContext('2d');
+      tabCtx.imageSmoothingQuality = 'high';
+      if (bgColor !== 'transparent') {
+        tabCtx.fillStyle = bgColor;
+        tabCtx.fillRect(0, 0, 32, 32);
+      }
+      const tPad = 32 * (iconPadding / 100);
+      tabCtx.drawImage(sourceImage, tPad, tPad, 32 - tPad * 2, 32 - tPad * 2);
+      mockupTabIcon.src = tabCanvas.toDataURL('image/png');
+
+      // 2. Render standard PNG favicons
+      FAVICON_SPECS.forEach(spec => {
+        const canvas = document.createElement('canvas');
+        canvas.width = spec.size;
+        canvas.height = spec.size;
+        const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingQuality = 'high';
+
+        if (bgColor !== 'transparent') {
+          ctx.fillStyle = bgColor;
+          ctx.fillRect(0, 0, spec.size, spec.size);
+        }
+
+        const padFactor = iconPadding / 100;
+        const p = spec.size * padFactor;
+        const drawSize = spec.size - (p * 2);
+        ctx.drawImage(sourceImage, p, p, drawSize, drawSize);
+
+        canvas.toBlob((blob) => {
+          if (!blob) return;
+          generatedBlobs.set(spec.filename, blob);
+
+          const card = document.createElement('div');
+          card.className = 'icon-preview-card';
+          card.innerHTML = `
+            <div class="icon-img-wrap">
+              <img src="${URL.createObjectURL(blob)}" alt="${spec.name}">
+            </div>
+            <span class="icon-label" title="${spec.filename}">${spec.name}</span>
+            <span class="icon-size-badge">${spec.size}x${spec.size}</span>
+            <button class="btn-sm" style="margin-top: 0.25rem; width: 100%; justify-content: center;">Download</button>
+          `;
+
+          card.querySelector('button').addEventListener('click', () => {
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = spec.filename;
+            a.click();
+            showToast('Saved', `Downloaded ${spec.filename}`);
+          });
+
+          iconGrid.appendChild(card);
+        }, 'image/png');
+      });
+
+      updateHtmlTags();
+    }
+
+    // HTML Snippet
+    function getHtmlTags() {
+      return `<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="manifest" href="/site.webmanifest">`;
+    }
+
+    function updateHtmlTags() {
+      codeHtmlTags.textContent = getHtmlTags();
+    }
+
+    document.getElementById('btn-copy-html').addEventListener('click', () => {
+      copyToClipboard(getHtmlTags(), 'HTML Favicon Tags');
+    });
+
+    // site.webmanifest
+    function getManifestJson() {
+      const appName = manifestNameInput.value || 'My Web App';
+      return JSON.stringify({
+        name: appName,
+        short_name: appName,
+        icons: [
+          {
+            src: "/android-chrome-192x192.png",
+            sizes: "192x192",
+            type: "image/png"
+          },
+          {
+            src: "/android-chrome-512x512.png",
+            sizes: "512x512",
+            type: "image/png"
+          }
+        ],
+        theme_color: bgColor !== 'transparent' ? bgColor : '#ffffff',
+        background_color: bgColor !== 'transparent' ? bgColor : '#ffffff',
+        display: "standalone"
+      }, null, 2);
+    }
+
+    document.getElementById('btn-download-manifest').addEventListener('click', () => {
+      downloadTextFile('site.webmanifest', getManifestJson(), 'application/manifest+json');
+    });
+
+    // Batch download all
+    document.getElementById('btn-download-all').addEventListener('click', async () => {
+      if (generatedBlobs.size === 0 && !sourceImage) {
+        showToast('No icons', 'Please upload or load an image first.');
+        return;
+      }
+
+      if (!generatedBlobs.has('favicon.ico')) {
+        const icoBlob = await generateFaviconIcoBlob();
+        if (icoBlob) generatedBlobs.set('favicon.ico', icoBlob);
+      }
+
+      let count = 0;
+      generatedBlobs.forEach((blob, filename) => {
+        setTimeout(() => {
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }, count * 180);
+        count++;
+      });
+
+      // Also trigger manifest download
+      setTimeout(() => {
+        downloadTextFile('site.webmanifest', getManifestJson(), 'application/manifest+json');
+      }, count * 180);
+
+      showToast('Downloading Favicons', `Exporting ${count} favicon assets + site.webmanifest.`);
+    });
+
+    updateHtmlTags();
+  </script>
+</body>
+</html>

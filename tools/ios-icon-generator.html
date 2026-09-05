@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iOS App Icon Generator - DevTools</title>
+  <meta name="description" content="Generate complete, Apple App Store-compliant iOS app icon sets for iPhone and iPad with Xcode Contents.json asset catalog export and background fill controls.">
+  <link rel="apple-touch-icon" sizes="180x180" href="../favicon_io/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon_io/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../favicon_io/favicon-16x16.png">
+  <link rel="shortcut icon" href="../favicon_io/favicon.ico">
+  <link rel="icon" type="image/x-icon" href="../favicon_io/favicon.ico">
+  <link rel="manifest" href="../favicon_io/site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <script src="../components.js"></script>
+  <style>
+    .platform-nav-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      padding: 0.6rem 0.85rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      align-items: center;
+    }
+    .platform-nav-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      transition: all var(--transition-fast);
+    }
+    .platform-nav-pill:hover {
+      border-color: var(--border-hover);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+    .platform-nav-pill.active {
+      background: var(--text-primary);
+      color: var(--bg-primary);
+      border-color: var(--text-primary);
+      font-weight: 600;
+    }
+    .color-swatches {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .color-swatch-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid var(--border-color);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: transform var(--transition-fast), border-color var(--transition-fast);
+    }
+    .color-swatch-btn:hover {
+      transform: scale(1.15);
+      border-color: var(--border-hover);
+    }
+    .color-swatch-btn.active {
+      border-color: var(--text-primary);
+      box-shadow: 0 0 0 2px var(--bg-primary), 0 0 0 4px var(--text-primary);
+    }
+    .color-swatch-btn.transparent {
+      background: repeating-conic-gradient(#808080 0% 25%, #ffffff 0% 50%) 50% / 8px 8px;
+    }
+    .ios-squircle-preview {
+      border-radius: 22.5%;
+    }
+  </style>
+</head>
+<body>
+  <!-- Shared Header -->
+  <header id="site-header" class="site-header"></header>
+
+  <main class="main-content">
+    <div class="container">
+      <!-- Breadcrumb & Title -->
+      <div class="tool-page-header">
+        <a href="../index.html" class="back-link">&larr; Back to all tools</a>
+        <div class="tool-page-title-row">
+          <h1 class="tool-page-title">iOS App Icon Generator</h1>
+          <span class="tool-badge">Apple iOS</span>
+        </div>
+        <p class="tool-page-desc">Generate complete, App Store-compliant icon assets for iPhone and iPad with ready-to-drop Xcode <code>Contents.json</code> asset catalogs, background fill controls, and safe margin scaling.</p>
+      </div>
+
+      <!-- Quick Platform Switcher Navigation -->
+      <div class="platform-nav-pills">
+        <span style="font-size: 0.775rem; font-weight: 600; color: var(--text-muted); margin-right: 0.35rem;">SWITCH PLATFORM:</span>
+        <a href="android-icon-generator.html" class="platform-nav-pill">
+          <span>🤖 Android & Splash</span>
+        </a>
+        <a href="ios-icon-generator.html" class="platform-nav-pill active">
+          <span>🍏 iOS Icon Generator</span>
+        </a>
+        <a href="electron-icon-generator.html" class="platform-nav-pill">
+          <span>💻 Electron & Desktop</span>
+        </a>
+        <a href="favicon-generator.html" class="platform-nav-pill">
+          <span>🌐 Web Favicon Generator</span>
+        </a>
+        <a href="app-icon-generator.html" class="platform-nav-pill" style="margin-left: auto;">
+          <span>📦 All-in-One Generator</span>
+        </a>
+      </div>
+
+      <!-- Master Image Dropzone -->
+      <div class="tool-panel" style="margin-bottom: 1.5rem;">
+        <input type="file" id="image-input" accept="image/*" style="display: none;">
+        
+        <div id="dropzone" class="dropzone">
+          <div class="dropzone-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+          </div>
+          <p class="dropzone-text"><strong>Click to upload</strong> or drag and drop your master iOS icon</p>
+          <p class="dropzone-subtext">PNG, JPG, SVG, or WebP (preferably 1024x1024 square)</p>
+          <div style="margin-top: 0.85rem;">
+            <button id="btn-sample-logo" class="btn-sm">Load Sample Logo</button>
+          </div>
+        </div>
+
+        <div id="master-info" style="display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono); margin-top: 0.5rem;">
+          <span id="file-name-label">No image loaded</span>
+          <span id="file-res-label"></span>
+        </div>
+      </div>
+
+      <!-- iOS App Store Settings & Compliance -->
+      <div class="tool-panel" style="margin-bottom: 1.5rem;">
+        <div class="panel-header">
+          <span class="panel-title">Apple App Store Compliance & Background Controls</span>
+          <span class="brand-badge" style="font-size: 0.65rem;">App Store HIG</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 0.5rem;">
+          <!-- Background Color -->
+          <div>
+            <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.4rem;">
+              Background Fill (No Alpha Allowed by Apple)
+            </label>
+            <div class="color-swatches" id="color-swatches">
+              <button class="color-swatch-btn active" data-color="#ffffff" style="background: #ffffff;" title="Solid White"></button>
+              <button class="color-swatch-btn" data-color="#000000" style="background: #000000;" title="Solid Black"></button>
+              <button class="color-swatch-btn" data-color="#121212" style="background: #121212;" title="Dark Charcoal"></button>
+              <button class="color-swatch-btn" data-color="#007aff" style="background: #007aff;" title="Apple Blue"></button>
+              <button class="color-swatch-btn transparent" data-color="transparent" title="Keep Transparent (Warning: rejected by App Store)"></button>
+              
+              <div style="display: flex; align-items: center; gap: 0.35rem; margin-left: 0.5rem;">
+                <input type="color" id="bg-picker" value="#ffffff" style="width: 28px; height: 28px; padding: 0; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; background: none;">
+                <input type="text" id="bg-hex" value="#FFFFFF" maxlength="7" style="width: 78px; font-family: var(--font-mono); font-size: 0.775rem; padding: 0.25rem 0.4rem; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary);">
+              </div>
+            </div>
+            <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 0.35rem;">
+              Apple strictly rejects App Store icons containing transparent alpha channels.
+            </span>
+          </div>
+
+          <!-- Icon Padding Slider -->
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+              <label for="padding-slider" style="font-size: 0.8rem; font-weight: 600; color: var(--text-primary);">
+                Logo Margin / Padding: <span id="padding-val" style="font-family: var(--font-mono);">10%</span>
+              </label>
+              <span style="font-size: 0.725rem; color: var(--text-muted);">Corner Safety</span>
+            </div>
+            <input type="range" id="padding-slider" min="0" max="30" value="10" style="width: 100%; accent-color: var(--text-primary); cursor: pointer;">
+            <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 0.35rem;">
+              Ensures the logo remains unclipped by iOS system corner curvature.
+            </span>
+          </div>
+
+          <!-- Preview Squircle Mask Toggle -->
+          <div>
+            <label style="display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.4rem;">
+              Visual Preview Mask
+            </label>
+            <label class="option-group" style="margin-top: 0.25rem;">
+              <input type="checkbox" id="toggle-squircle" checked>
+              <span>Simulate iOS Squircle Mask in Preview</span>
+            </label>
+            <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 0.35rem;">
+              Exported files are square (as required by Xcode), with optional squircle visualizer.
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Xcode Contents.json & Integration Guide -->
+      <div class="tool-panel" style="margin-bottom: 1.5rem;">
+        <div class="panel-header">
+          <span class="panel-title">Xcode Asset Catalog (AppIcon.appiconset)</span>
+          <div style="display: flex; gap: 0.5rem;">
+            <button id="btn-copy-json" class="btn-sm">Copy Contents.json</button>
+            <button id="btn-download-json" class="btn-sm">Download Contents.json</button>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1rem; margin-top: 0.5rem;" class="xcode-guide-grid">
+          <div>
+            <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-primary); display: block; margin-bottom: 0.35rem;">How to Import into Xcode:</span>
+            <ol style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.6; padding-left: 1.25rem; margin: 0;">
+              <li>Download your icon set using <strong>Download All iOS Icons</strong>.</li>
+              <li>Download the matching <strong>Contents.json</strong> using the button above.</li>
+              <li>In Xcode, expand your project > open <code>Assets.xcassets</code>.</li>
+              <li>Right click on <code>AppIcon</code> > select <strong>Show in Finder</strong>.</li>
+              <li>Replace the contents of <code>AppIcon.appiconset</code> with the generated PNGs and <code>Contents.json</code>.</li>
+            </ol>
+          </div>
+
+          <div>
+            <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-primary); display: block; margin-bottom: 0.35rem;">Contents.json Preview:</span>
+            <pre id="json-preview" style="background: var(--bg-primary); padding: 0.65rem; border-radius: 4px; border: 1px solid var(--border-subtle); font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-primary); max-height: 120px; overflow-y: auto; margin: 0;"></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Generated iOS Icons Grid -->
+      <div class="tool-panel" style="margin-bottom: 3.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.85rem;">
+          <div>
+            <span class="panel-title" style="display: block;">Generated iOS Icon Set</span>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">iPhone, iPad, Spotlight, Settings, Notifications, and App Store 1024px</span>
+          </div>
+          <button id="btn-download-all" class="btn-sm btn-primary">Download All iOS Icons</button>
+        </div>
+
+        <div id="icon-grid" class="icon-preview-grid">
+          <!-- Populated via JavaScript -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared Footer -->
+  <footer id="site-footer" class="site-footer"></footer>
+
+  <script src="common.js"></script>
+  <script>
+    // iOS Standard Icon Specs with exact Xcode mapping
+    const IOS_ICON_SPECS = [
+      { name: 'App Store Marketing', size: 1024, filename: 'icon-1024.png', idiom: 'ios-marketing', scale: '1x', psize: '1024x1024' },
+      
+      // iPhone
+      { name: 'iPhone App @3x', size: 180, filename: 'icon-60@3x.png', idiom: 'iphone', scale: '3x', psize: '60x60' },
+      { name: 'iPhone App @2x', size: 120, filename: 'icon-60@2x.png', idiom: 'iphone', scale: '2x', psize: '60x60' },
+      { name: 'Spotlight @3x', size: 120, filename: 'icon-40@3x.png', idiom: 'iphone', scale: '3x', psize: '40x40' },
+      { name: 'Spotlight @2x', size: 80, filename: 'icon-40@2x.png', idiom: 'iphone', scale: '2x', psize: '40x40' },
+      { name: 'Settings @3x', size: 87, filename: 'icon-29@3x.png', idiom: 'iphone', scale: '3x', psize: '29x29' },
+      { name: 'Settings @2x', size: 58, filename: 'icon-29@2x.png', idiom: 'iphone', scale: '2x', psize: '29x29' },
+      { name: 'Notification @3x', size: 60, filename: 'icon-20@3x.png', idiom: 'iphone', scale: '3x', psize: '20x20' },
+      { name: 'Notification @2x', size: 40, filename: 'icon-20@2x.png', idiom: 'iphone', scale: '2x', psize: '20x20' },
+
+      // iPad
+      { name: 'iPad Pro @2x', size: 167, filename: 'icon-ipad-83.5@2x.png', idiom: 'ipad', scale: '2x', psize: '83.5x83.5' },
+      { name: 'iPad App @2x', size: 152, filename: 'icon-ipad-76@2x.png', idiom: 'ipad', scale: '2x', psize: '76x76' },
+      { name: 'iPad App @1x', size: 76, filename: 'icon-ipad-76@1x.png', idiom: 'ipad', scale: '1x', psize: '76x76' },
+      { name: 'iPad Spotlight @2x', size: 80, filename: 'icon-ipad-40@2x.png', idiom: 'ipad', scale: '2x', psize: '40x40' },
+      { name: 'iPad Spotlight @1x', size: 40, filename: 'icon-ipad-40@1x.png', idiom: 'ipad', scale: '1x', psize: '40x40' },
+      { name: 'iPad Settings @2x', size: 58, filename: 'icon-ipad-29@2x.png', idiom: 'ipad', scale: '2x', psize: '29x29' },
+      { name: 'iPad Settings @1x', size: 29, filename: 'icon-ipad-29@1x.png', idiom: 'ipad', scale: '1x', psize: '29x29' },
+      { name: 'iPad Notif @2x', size: 40, filename: 'icon-ipad-20@2x.png', idiom: 'ipad', scale: '2x', psize: '20x20' },
+      { name: 'iPad Notif @1x', size: 20, filename: 'icon-ipad-20@1x.png', idiom: 'ipad', scale: '1x', psize: '20x20' }
+    ];
+
+    let sourceImage = null;
+    let bgColor = '#ffffff';
+    let iconPadding = 10; // percent
+    const generatedBlobs = new Map();
+
+    const dropzone = document.getElementById('dropzone');
+    const imageInput = document.getElementById('image-input');
+    const fileNameLabel = document.getElementById('file-name-label');
+    const fileResLabel = document.getElementById('file-res-label');
+    const iconGrid = document.getElementById('icon-grid');
+
+    const colorSwatches = document.getElementById('color-swatches');
+    const bgPicker = document.getElementById('bg-picker');
+    const bgHex = document.getElementById('bg-hex');
+    const paddingSlider = document.getElementById('padding-slider');
+    const paddingVal = document.getElementById('padding-val');
+    const toggleSquircle = document.getElementById('toggle-squircle');
+    const jsonPreview = document.getElementById('json-preview');
+
+    // File Handling
+    dropzone.addEventListener('click', () => imageInput.click());
+
+    dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('dragover');
+    });
+
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        processFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    imageInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        processFile(e.target.files[0]);
+      }
+    });
+
+    function processFile(file) {
+      if (!file.type.startsWith('image/')) {
+        showToast('Invalid file', 'Please upload a valid image file (PNG, JPG, SVG, WebP).');
+        return;
+      }
+
+      fileNameLabel.textContent = file.name;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          sourceImage = img;
+          fileResLabel.textContent = `${img.naturalWidth} × ${img.naturalHeight} px`;
+          renderIcons();
+          updateJson();
+          showToast('Image Loaded', 'Master iOS image ready.');
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Sample Logo Generator
+    document.getElementById('btn-sample-logo').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const canvas = document.createElement('canvas');
+      canvas.width = 1024;
+      canvas.height = 1024;
+      const ctx = canvas.getContext('2d');
+
+      // Apple-styled minimalist swift star logo
+      const gradient = ctx.createLinearGradient(0, 0, 1024, 1024);
+      gradient.addColorStop(0, '#007aff');
+      gradient.addColorStop(1, '#5856d6');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, 1024, 1024);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      // Swift-like bird wing curve
+      ctx.moveTo(350, 720);
+      ctx.bezierCurveTo(450, 680, 580, 560, 680, 360);
+      ctx.bezierCurveTo(620, 480, 520, 540, 420, 560);
+      ctx.bezierCurveTo(490, 510, 560, 430, 600, 320);
+      ctx.bezierCurveTo(500, 420, 380, 460, 260, 430);
+      ctx.bezierCurveTo(340, 530, 450, 610, 350, 720);
+      ctx.fill();
+
+      const img = new Image();
+      img.onload = () => {
+        sourceImage = img;
+        fileNameLabel.textContent = 'sample-swift-app.png';
+        fileResLabel.textContent = '1024 × 1024 px';
+        renderIcons();
+        updateJson();
+        showToast('Sample Loaded', 'Demo Apple iOS icon ready.');
+      };
+      img.src = canvas.toDataURL('image/png');
+    });
+
+    // Background Swatches
+    colorSwatches.querySelectorAll('.color-swatch-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        colorSwatches.querySelectorAll('.color-swatch-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        bgColor = btn.dataset.color;
+        if (bgColor !== 'transparent') {
+          bgPicker.value = bgColor;
+          bgHex.value = bgColor.toUpperCase();
+        }
+        renderIcons();
+      });
+    });
+
+    bgPicker.addEventListener('input', (e) => {
+      bgColor = e.target.value;
+      bgHex.value = bgColor.toUpperCase();
+      colorSwatches.querySelectorAll('.color-swatch-btn').forEach(b => b.classList.remove('active'));
+      renderIcons();
+    });
+
+    bgHex.addEventListener('change', (e) => {
+      let val = e.target.value.trim();
+      if (!val.startsWith('#')) val = '#' + val;
+      if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+        bgColor = val;
+        bgPicker.value = val;
+        colorSwatches.querySelectorAll('.color-swatch-btn').forEach(b => b.classList.remove('active'));
+        renderIcons();
+      }
+    });
+
+    // Padding Slider
+    paddingSlider.addEventListener('input', (e) => {
+      iconPadding = parseInt(e.target.value, 10);
+      paddingVal.textContent = `${iconPadding}%`;
+      renderIcons();
+    });
+
+    // Squircle Toggle
+    toggleSquircle.addEventListener('change', () => {
+      document.querySelectorAll('.icon-img-wrap').forEach(wrap => {
+        wrap.style.borderRadius = toggleSquircle.checked ? '22.5%' : '4px';
+      });
+    });
+
+    // Render Icons
+    function renderIcons() {
+      if (!sourceImage) return;
+
+      iconGrid.innerHTML = '';
+      generatedBlobs.clear();
+
+      IOS_ICON_SPECS.forEach(spec => {
+        const canvas = document.createElement('canvas');
+        canvas.width = spec.size;
+        canvas.height = spec.size;
+        const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingQuality = 'high';
+
+        // Background
+        if (bgColor !== 'transparent') {
+          ctx.fillStyle = bgColor;
+          ctx.fillRect(0, 0, spec.size, spec.size);
+        }
+
+        // Draw padded logo
+        const padFactor = iconPadding / 100;
+        const pad = spec.size * padFactor;
+        const drawSize = spec.size - (pad * 2);
+        ctx.drawImage(sourceImage, pad, pad, drawSize, drawSize);
+
+        canvas.toBlob((blob) => {
+          if (!blob) return;
+          generatedBlobs.set(spec.filename, blob);
+
+          const card = document.createElement('div');
+          card.className = 'icon-preview-card';
+          card.innerHTML = `
+            <div class="icon-img-wrap" style="border-radius: ${toggleSquircle.checked ? '22.5%' : '4px'};">
+              <img src="${URL.createObjectURL(blob)}" alt="${spec.name}">
+            </div>
+            <span class="icon-label" title="${spec.filename}">${spec.name}</span>
+            <span class="icon-size-badge">${spec.size}x${spec.size}</span>
+            <button class="btn-sm" style="margin-top: 0.25rem; width: 100%; justify-content: center;">Download</button>
+          `;
+
+          card.querySelector('button').addEventListener('click', () => {
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = spec.filename;
+            a.click();
+            showToast('Saved', `Downloaded ${spec.filename}`);
+          });
+
+          iconGrid.appendChild(card);
+        }, 'image/png');
+      });
+    }
+
+    // Xcode Contents.json
+    function getXcodeContentsJson() {
+      const images = IOS_ICON_SPECS.map(spec => ({
+        size: spec.psize,
+        idiom: spec.idiom,
+        filename: spec.filename,
+        scale: spec.scale
+      }));
+
+      return JSON.stringify({
+        images: images,
+        info: {
+          version: 1,
+          author: "xcode"
+        }
+      }, null, 2);
+    }
+
+    function updateJson() {
+      jsonPreview.textContent = getXcodeContentsJson();
+    }
+
+    document.getElementById('btn-copy-json').addEventListener('click', () => {
+      copyToClipboard(getXcodeContentsJson(), 'Contents.json');
+    });
+
+    document.getElementById('btn-download-json').addEventListener('click', () => {
+      downloadTextFile('Contents.json', getXcodeContentsJson(), 'application/json');
+    });
+
+    // Batch download all icons
+    document.getElementById('btn-download-all').addEventListener('click', () => {
+      if (generatedBlobs.size === 0) {
+        showToast('No icons', 'Please upload or load an image first.');
+        return;
+      }
+      let count = 0;
+      generatedBlobs.forEach((blob, filename) => {
+        setTimeout(() => {
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        }, count * 180);
+        count++;
+      });
+      showToast('Downloading Icons', `Exporting ${count} iOS icons to your downloads folder.`);
+    });
+
+    // Initial JSON display
+    updateJson();
+  </script>
+</body>
+</html>

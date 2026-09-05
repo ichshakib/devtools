@@ -16,6 +16,44 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../style.css">
   <script src="../components.js"></script>
+  <style>
+    .platform-nav-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      padding: 0.6rem 0.85rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      align-items: center;
+    }
+    .platform-nav-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      transition: all var(--transition-fast);
+    }
+    .platform-nav-pill:hover {
+      border-color: var(--border-hover);
+      color: var(--text-primary);
+      transform: translateY(-1px);
+    }
+    .platform-nav-pill.active {
+      background: var(--text-primary);
+      color: var(--bg-primary);
+      border-color: var(--text-primary);
+      font-weight: 600;
+    }
+  </style>
 </head>
 <body>
   <!-- Main Navigation (Hydrated by components.js) -->
@@ -26,10 +64,30 @@
       <div class="tool-page-header">
         <a href="../index.html" class="back-link">&larr; Back to all tools</a>
         <div class="tool-page-title-row">
-          <h1 class="tool-page-title">App Icon Generator</h1>
+          <h1 class="tool-page-title">App Icon Generator (All-in-One)</h1>
           <span class="tool-badge">Assets</span>
         </div>
         <p class="tool-page-desc">Generate production-ready icon asset sets for Desktop & Electron (Windows, macOS, Linux, and multi-resolution .ICO), iOS, Android, PWA, and Favicons from a single master image.</p>
+      </div>
+
+      <!-- Quick Platform Switcher Navigation -->
+      <div class="platform-nav-pills">
+        <span style="font-size: 0.775rem; font-weight: 600; color: var(--text-muted); margin-right: 0.35rem;">SPECIALIZED GENERATORS:</span>
+        <a href="android-icon-generator.html" class="platform-nav-pill">
+          <span>🤖 Android & Splash</span>
+        </a>
+        <a href="ios-icon-generator.html" class="platform-nav-pill">
+          <span>🍏 iOS Icon Generator</span>
+        </a>
+        <a href="electron-icon-generator.html" class="platform-nav-pill">
+          <span>💻 Electron & Desktop</span>
+        </a>
+        <a href="favicon-generator.html" class="platform-nav-pill">
+          <span>🌐 Web Favicon Generator</span>
+        </a>
+        <a href="app-icon-generator.html" class="platform-nav-pill active" style="margin-left: auto;">
+          <span>📦 All-in-One Generator</span>
+        </a>
       </div>
 
       <!-- Upload Dropzone -->
